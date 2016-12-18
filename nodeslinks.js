@@ -13,7 +13,7 @@ Author: Annelie Bremmer, Abhiruchi Chhikara
 
 //Datavis
 //number of keywords 0-1, 0 will give a lot of keywords
-var filterNum = 0.1;
+var filterNum = 0.5;
 
 
 // SVG
@@ -262,7 +262,7 @@ $(document).ready(function() {
             })
         }
         // console.log(dataG);
-        // loadData(dataG, filterNum);
+        loadData(dataG, filterNum);
 
   }); // end get 
 }); // end document.ready
@@ -668,7 +668,7 @@ function simpleNodes(){
             } 
         });
     
-    $(".labels").show();  
+    // $(".labels").show();  
     // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
       path.attr("d", linkArc);
@@ -691,10 +691,11 @@ function simpleNodes(){
 
             var d = this.__data__;  
                 console.log(d);
+             return "Title:"+ '<br>'+d.headline+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;
+
             if (d.name[0].length==1){
              return "Major Keyword: "+d.name;
             }
-             return "Paper Keywords:"+'<br>'+d.name+'<br>'+'<br>'+"Title:"+ '<br>'+d.headline;
         }
     });
     $('#clickZoom').fadeIn();
