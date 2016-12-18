@@ -111,7 +111,7 @@ var uniqueKDone=false;
 var theX = [];
 var maxEntries;
 var citeNums = [];
-var radius = 3;
+var radius = 4;
     //Width and height
 
 var newCircle;
@@ -258,6 +258,7 @@ $(document).ready(function() {
                 "link":entry[i]['gsx$link']['$t'],
                 "medium":entry[i]['gsx$medium']['$t'],
                 "year":entry[i]['gsx$year']['$t'],
+                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
                 "title":entry[i]['gsx$title']['$t'],
             })
         }
@@ -274,11 +275,12 @@ $(document).ready(function() {
                 "summary": entry[i]['gsx$summary']['$t'],
                 "link":entry[i]['gsx$link']['$t'],
                 "medium":entry[i]['gsx$medium']['$t'],
+                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
                 "title":entry[i]['gsx$title']['$t'],
             })
         }
         // console.log(dataG);
-        loadData(dataG, filterNum);
+                // loadData(dataG, filterNum);
 
     }); // end get 
 
@@ -526,7 +528,7 @@ function createNodes(){
             for (j=0; j<uniqueMostKeyed.length; j++){ 
                 if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
                     
-                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"sourceTitle":thisData[i].medium.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link}) 
+                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceTitle":thisData[i].medium.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link}) 
                      
                 }
             }
@@ -548,7 +550,7 @@ function simpleNodes(){
         
      
         
-      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, cites:link.cites, sTitle:link.sourceTitle, url: link.url, headline:link.headline, authors:link.authors});
+      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, cites:link.cites, sTitle:link.sourceTitle, tResearch: link.typeResearch, url: link.url, headline:link.headline, authors:link.authors});
        
           
       link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
@@ -612,28 +614,57 @@ function simpleNodes(){
             }
             maxNodeCited = d3.max(nodeCited, function(d){ return d; })
 
-            for (k=0; k<uniqueTypes.length; k++){
-               if(d.sTitle==uniqueTypes[k]){
-                    return color(k);
-               }
-            }
+            // if()
+            if(howLong[i][0].length>1 && d.tResearch=="project"){
+                return "pink";
+            }  
+            if(howLong[i][0].length>1 && d.tResearch=="reading"){
+                return "grey";
+            }  
+
             if(howLong.length>0){
-            if(howLong[i][0].length==1){
-                return "white";
-            }        
+                if(howLong[i][0].length==1){
+                    return "white";
+                }        
             }
         })
         .attr("stroke", function(d,i){
-        if(howLong.length>0){    
-            if(howLong[i][0].length==1){
-                return "black";
-            } 
-            if(howLong[i][0].length>1){
-                return "none";
-            }   
-        }
+            if(howLong.length>0){    
+                if(howLong[i][0].length==1){
+                    return "black";
+                } 
+                for (k=0; k<uniqueTypes.length; k++){
+                   if(d.sTitle==uniqueTypes[k]){
+                        return color(k);
+                   }
+                }
+                // if(howLong[i][0].length>1 && d.tResearch=="project"){
+                //     return "pink";
+                // }  
+                // if(howLong[i][0].length>1 && d.tResearch=="reading"){
+                //     return "grey";
+                // }  
+            }
         })
-        .attr("stroke-width",.3)
+        .attr("stroke-width", function(d,i){
+            if(howLong.length>0){    
+                if(howLong[i][0].length==1){
+                    return .1;
+                } 
+                for (k=0; k<uniqueTypes.length; k++){
+                   if(d.sTitle==uniqueTypes[k]){
+                        return 3;
+                   }
+                }
+                // if(howLong[i][0].length>1 && d.tResearch=="project"){
+                //     return "pink";
+                // }  
+                // if(howLong[i][0].length>1 && d.tResearch=="reading"){
+                //     return "grey";
+                // }  
+            }
+        })
+
         .attr("opacity", function(d,i){
             thisMap = d3.scale.linear()
                 .domain([0,maxNodeCited])

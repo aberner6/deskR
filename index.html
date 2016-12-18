@@ -254,11 +254,17 @@
         #container{
             z-index: 1;
             left: 5%;
-            width: 100%;
+            width: 50%;
             height: 100%;
             right:5%;
         }
-
+        #containerTwo{
+            z-index: 1;
+            /*left: 5%;*/
+            width: 50%;
+            height: 100%;
+            right:5%;
+        }
 
         #header{
             left: 1%;
@@ -335,7 +341,7 @@
 <body>
     
     <!-- /*** HEADINGS ***/ -->
-    <div id="header">CoHERE Desk Research</div>
+    <div id="header">CIID RESEARCH + CoHERE</div>
     <div id="titlename"> READINGS AND INSTALLATIONS <br>  </div>
     <!-- <div id="subtitlename"> Sort by  <br>  </div> -->
     
@@ -343,8 +349,8 @@
     <div class="button" id = "key">Key</div>
     <div class="button" id = "year"> Year </div>
     <div class="button" id = "medium"> Medium </div>   
-    <div class="button" id = "addedby"> Added By </div>
-    <div class="button" id = "dateadded"> Data added </div>
+    <div class="button" id = "addedby"> Contributor </div>
+    <div class="button" id = "dateadded"> Date Added </div>
     
     <center>
     <div class="button" id="reset"> RESET </div>
@@ -359,7 +365,9 @@
     
     <!-- /*** CONTAINER for nodes ***/ -->
     <div id = "container"></div>
-    <script type="text/javascript" src="nodeslinks.js"></script>
+    <div id = "containerTwo"></div>
+
+    <script type="text/javascript" src="readings.js"></script>
 
 </body>
 </html>

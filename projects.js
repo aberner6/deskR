@@ -1,6 +1,6 @@
 /**********
 
-NODELINKS.JS
+NODElinksTwo.JS
 
 Author: Annelie Bremmer, Abhiruchi Chhikara
 
@@ -11,14 +11,14 @@ Author: Annelie Bremmer, Abhiruchi Chhikara
 /*** Variables ***/
 
 
-//Datavis
+//DatavisTwo
 //number of keywords 0-1, 0 will give a lot of keywords
 var filterNum = 0.5;
 
 
 // SVG
-var svg;
-var w = window.outerWidth;
+var svgTwo;
+var w = window.outerWidth/2;
 var h = window.innerHeight-50;
 
 // for Key 
@@ -150,91 +150,91 @@ var saveOne=[];
 var thisY = [];
 var thisX = [];
 
-var links = [];
+var linksTwoTwo = [];
 var nodeCited = [];
-var nodes = {};
+var nodesTwoTwo = {};
 var drag;
 var n;
 var maxNodeCited;
 
 var rMap; 
 var circle, path, text;
-var force;
+var forceTwo;
 var scaleRadius = 5;
 var howLong = [];
-var nodes = {};
+var nodesTwo = {};
 var thisPaperName;
 
 
 
-svg = d3.select("#container")
+svgTwo = d3.select("#containerTwo")
     .append("svg")
     .attr("width", w)
     .attr("height", h)
 
-var vis = svg //for the visualization
-.append('svg:g')
-.attr("transform","translate("+ 0 + "," + 0 + ")");  
+var visTwo = svgTwo //for the visTwoualization
+    .append('svg:g')
+    .attr("transform","translate("+ 0 + "," + 0 + ")");  
 
 
 
 /***** KEY *****/
 
-$("#key").click(function() {
-    $(".keyCirc, .newlabel, .paperCirc, .journoCirc, .descriplabel").toggle();
-})   
+// $("#keyTwo").click(function() {
+//     $(".keyCirc, .newlabel, .paperCirc, .journoCirc, .descriplabel").toggle();
+// })   
 
-var paperKeyCircle = vis.selectAll("paperCirc")
-    .data(t)
-    .enter()
-    .append("circle").attr("class","paperCirc")
-    .attr("cx", 20)
-    .attr("cy", startingY-20)
-    .attr("fill", 'rgb(251,180,174)')
-    .attr("r",radius)
+// var paperKeyCircle = visTwo.selectAll("paperCirc")
+//     .data(t)
+//     .enter()
+//     .append("circle").attr("class","paperCirc")
+//     .attr("cx", 20)
+//     .attr("cy", startingY-20)
+//     .attr("fill", 'rgb(251,180,174)')
+//     .attr("r",radius)
 
-var paperLabel = vis.selectAll("keylabel")
-    .data(t)
-    .enter()
-    .append("text").attr("class","newlabel")
-    .attr("x", 34)
-    .attr("y", startingYLabel-18)
-    .text("Colored Dot   Paper") 
+// var paperLabel = visTwo.selectAll("keylabel")
+//     .data(t)
+//     .enter()
+//     .append("text").attr("class","newlabel")
+//     .attr("x", 34)
+//     .attr("y", startingYLabel-18)
+//     .text("Colored Dot   Paper") 
 
-var keyCircle = vis.selectAll("keyCirc")
-   .data(t)
-    .enter()
-    .append("circle").attr("class","keyCirc")
-    .attr("cx", 20)
-    .attr("cy", startingY)
-    .attr("fill", "white")
-    .attr("stroke", "gray")
-    .attr("r",8)
+// var keyCircle = visTwo.selectAll("keyCirc")
+//    .data(t)
+//     .enter()
+//     .append("circle").attr("class","keyCirc")
+//     .attr("cx", 20)
+//     .attr("cy", startingY)
+//     .attr("fill", "white")
+//     .attr("stroke", "gray")
+//     .attr("r",8)
 
-var keyLabel = vis.selectAll("keylabel")
-    .data(t)
-    .enter()
-    .append("text").attr("class","newlabel")
-    .attr("x", 34)
-    .attr("y", startingYLabel)
-    .text("White Dot   Major Keyword")     
+// var keyLabel = visTwo.selectAll("keylabel")
+//     .data(t)
+//     .enter()
+//     .append("text").attr("class","newlabel")
+//     .attr("x", 34)
+//     .attr("y", startingYLabel)
+//     .text("White Dot   Major Keyword")     
 
-var journoTitle = vis.selectAll("keylabel")
-        .data(t)
-        .enter()
-        .append("text").attr("class","newlabel")
-        .attr("x", 17)
-        .attr("y", 391)
-        .text("Each color represents a medium:")    
+// var journoTitle = visTwo.selectAll("keylabel")
+//         .data(t)
+//         .enter()
+//         .append("text").attr("class","newlabel")
+//         .attr("x", 17)
+//         .attr("y", 391)
+//         .text("Each color represents a medium:")    
 
- d3.select("#titlename").classed("selected", true);
-    d3.select("#subtitlename").classed("selected", true);
-    $("#titlename").slideDown("slow")
-    $("#subtitlename").slideDown("slow")
+//  d3.select("#titlename").classed("selected", true);
+//     d3.select("#subtitlename").classed("selected", true);
+//     $("#titlename").slideDown("slow")
+//     $("#subtitlename").slideDown("slow")
 
     
 
-/*** Import Data, sort and create nodes  ***/
+/*** Import Data, sort and create nodesTwo  ***/
 
 // loadData("deskResearch.csv", filterNum)   // choose threshhold 0.001 to 1 to choose number of keywords to show
 //old day
@@ -244,26 +244,6 @@ var dataG = [];
 $(document).ready(function() {
 
   // start get - URI (REPLACE KEY WITH YOUR OWN, callback function)
-  
-  // see http://coderwall.com/p/duapqq for tutorial on using Google Spreadsheet as JSON
-    $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/oh09z64/public/values?alt=json", function(datoo) {
-    // 16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0
-        var entry = datoo.feed.entry;
-        console.log(entry);
-        for (i=0; i<entry.length; i++){
-            dataG.push({
-                "author": entry[i]['gsx$author']['$t'],
-                "keywords": entry[i]['gsx$keywords']['$t'],
-                "summary": entry[i]['gsx$summary']['$t'],
-                "link":entry[i]['gsx$link']['$t'],
-                "medium":entry[i]['gsx$medium']['$t'],
-                "year":entry[i]['gsx$year']['$t'],
-                "title":entry[i]['gsx$title']['$t'],
-            })
-        }
-        // console.log(dataG);
-        // loadData(dataG, filterNum);
-    }); // end get 
     $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
         var entry = datoo.feed.entry;
         console.log(entry);
@@ -439,7 +419,7 @@ function loadData(dataName, filterNum){
         
     
    /***FOR KEY ***/
-    var journoCircle = vis.selectAll("journoCirc")
+    var journoCircle = visTwo.selectAll("journoCirc")
         .data(keyTypes)
         .enter()
         .append("circle")
@@ -453,7 +433,7 @@ function loadData(dataName, filterNum){
         })
         .attr("r",radius)
 
-   var journoLabel = vis.selectAll("keylabel")
+   var journoLabel = visTwo.selectAll("keylabel")
         .data(keyTypes)
         .enter()
         .append("text").attr("class","newlabel")
@@ -463,7 +443,7 @@ function loadData(dataName, filterNum){
         .attr("x", 34)
         .text(function(d){ return toTitleCase(d); });   
 
-        createNodes();    
+        createnodesTwo();    
     
         
    /** Functions **/
@@ -518,59 +498,59 @@ function loadData(dataName, filterNum){
 
 
 
-function createNodes(){
-    links = [];
+function createnodesTwo(){
+    linksTwo = [];
     if(itsDone==false){
  
         for (i=0; i<thisData.length; i++){ 
             for (j=0; j<uniqueMostKeyed.length; j++){ 
                 if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
                     
-                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"sourceTitle":thisData[i].medium.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link}) 
+                    linksTwo.push({"source":keywords[i],"target":uniqueMostKeyed[j],"sourceTitle":thisData[i].medium.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link}) 
                      
                 }
             }
         } 
-        simpleNodes();
+        simplenodesTwo();
     }
     
 }
 
-function simpleNodes(){
+function simplenodesTwo(){
     
     var thisMap;
     var thisWeight = [];
     var maxWeight;
     
-    // Compute the distinct nodes from the links.
+    // Compute the distinct nodesTwo from the linksTwo.
 
-    links.forEach(function(link) {
+    linksTwo.forEach(function(link) {
         
      
         
-      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, cites:link.cites, sTitle:link.sourceTitle, url: link.url, headline:link.headline, authors:link.authors});
+      link.source = nodesTwo[link.source] || (nodesTwo[link.source] = {name: link.source, cites:link.cites, sTitle:link.sourceTitle, url: link.url, headline:link.headline, authors:link.authors});
        
           
-      link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+      link.target = nodesTwo[link.target] || (nodesTwo[link.target] = {name: link.target});
 
     });
     
-    force = d3.layout.force()
-        .nodes(d3.values(nodes))
-        .links(links)
+    forceTwo = d3.layout.force()
+        .nodes(d3.values(nodesTwo))
+        .links(linksTwo)
         .size([w, h])
         .linkDistance(30)
         .charge(-400)
         .on("tick", tick)
         .start();
 
-    drag = force.drag() 
+    drag = forceTwo.drag() 
         .on("dragstart", dragstart);   
 
-    path = vis.selectAll("path")
-        .data(force.links())
+    path = visTwo.selectAll("pathTwo")
+        .data(forceTwo.links())
         .enter().append("path")
-        .attr("class","link") 
+        .attr("class","linkTwo") 
         .attr("stroke", function(d,i){
             for (k=0; k<uniqueTypes.length; k++){
                if(d.sourceTitle==uniqueTypes[k]){
@@ -584,8 +564,8 @@ function simpleNodes(){
             }
         })
 
-    circle = vis.selectAll("node")
-        .data(force.nodes())
+    circle = visTwo.selectAll("nodeTwo")
+        .data(forceTwo.nodes())
         .enter().append("circle")
         .attr("class",function(d){
             howLong.push(d.name);
@@ -595,7 +575,7 @@ function simpleNodes(){
                 .domain([0,maxWeight])
                 .range([radius, radius*9])  
 
-            return "node";
+            return "nodeTwo";
         })  
     
     circle
@@ -670,12 +650,12 @@ function simpleNodes(){
         d3.select(this).classed("fixed", d.fixed = true);
     }
 
-    console.log("simple nodes")
+    console.log("simple nodesTwo")
 
-    text= vis.selectAll("labels")
-        .data(force.nodes())
+    text= visTwo.selectAll("labels")
+        .data(forceTwo.nodes())
         .enter().append("text")
-        .attr("class","labels")
+        .attr("class","labelsTwo")
         .attr("x", 0)
         .attr("y", ".31em")
         .attr("text-anchor", "start")
@@ -737,7 +717,7 @@ function stopBigNet(){
         .attr("d", linkArc);
 
     function newTransform(d,i){
-            d.y = h; //not links[i].cites
+            d.y = h; //not linksTwo[i].cites
             return "translate(" + d.x+ "," + d.y + ")";
     }     
 }
@@ -768,14 +748,14 @@ var zoomInOut = function(t, s) {
     if (s<initialZoom){
         showReset = false;
     }
-    vis.attr("transform",
+    visTwo.attr("transform",
       "translate("+d3.event.translate+ ")"
       + " scale(" + d3.event.scale + ")");
 };   
 
 function resetZoom(){
     console.log("reset viz")
-    vis.attr("transform",
+    visTwo.attr("transform",
       "translate("+ 0 + "," + 0 + ")"
       + " scale(" + initialZoom + ")");
 
