@@ -240,10 +240,32 @@ var visTwo = svgTwo //for the visTwoualization
 //old day
 
 //new way
+//new way
 var dataG = [];
 $(document).ready(function() {
 
   // start get - URI (REPLACE KEY WITH YOUR OWN, callback function)
+  
+  // see http://coderwall.com/p/duapqq for tutorial on using Google Spreadsheet as JSON
+    $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/oh09z64/public/values?alt=json", function(datoo) {
+    // 16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0
+        var entry = datoo.feed.entry;
+        console.log(entry);
+        for (i=0; i<entry.length; i++){
+            dataG.push({
+                "author": entry[i]['gsx$author']['$t'],
+                "keywords": entry[i]['gsx$keywords']['$t'],
+                "summary": entry[i]['gsx$summary']['$t'],
+                "link":entry[i]['gsx$link']['$t'],
+                "medium":entry[i]['gsx$medium']['$t'],
+                "year":entry[i]['gsx$year']['$t'],
+                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
+                "title":entry[i]['gsx$title']['$t'],
+            })
+        }
+        // console.log(dataG);
+        // loadData(dataG, filterNum);
+    }); // end get 
     $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
         var entry = datoo.feed.entry;
         console.log(entry);
@@ -254,18 +276,18 @@ $(document).ready(function() {
                 "summary": entry[i]['gsx$summary']['$t'],
                 "link":entry[i]['gsx$link']['$t'],
                 "medium":entry[i]['gsx$medium']['$t'],
+                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
                 "title":entry[i]['gsx$title']['$t'],
             })
         }
         // console.log(dataG);
-        loadData(dataG, filterNum);
+                // loadData(dataG, filterNum);
 
     }); // end get 
 
 
     // loadData(dataG, filterNum);
 }); // end document.ready
-
 
 /*** Setting up Zoom Ability  ***/
 svg.call(d3.behavior.zoom() 

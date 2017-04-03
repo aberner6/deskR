@@ -1,10 +1,3 @@
-/**********
-
-NODELINKS.JS
-
-Author: Annelie Bremmer, Abhiruchi Chhikara
-
-**********/
 
 
 
@@ -13,7 +6,7 @@ Author: Annelie Bremmer, Abhiruchi Chhikara
 
 //Datavis
 //number of keywords 0-1, 0 will give a lot of keywords
-var filterNum = 0.5;
+var filterNum = .3;
 
 
 // SVG
@@ -21,7 +14,7 @@ var svg;
 var w = window.outerWidth;
 var h = window.innerHeight-50;
 
-// for Key 
+// for Key
 var startingX = 20;
 var startingY = 349;//523;
 var startingXLabel = 34;
@@ -119,7 +112,7 @@ var newCircle;
 var color; //=  d3.scale.category20c();
 
 var colorSpectrum = [
-    "#fc5988" 
+    "#fc5988"
     ,"#b14a41"
     ,"#6ab054"
     ,"#8675ee"
@@ -157,7 +150,7 @@ var drag;
 var n;
 var maxNodeCited;
 
-var rMap; 
+var rMap;
 var circle, path, text;
 var force;
 var scaleRadius = 5;
@@ -174,7 +167,7 @@ svg = d3.select("#container")
 
 var vis = svg //for the visualization
 .append('svg:g')
-.attr("transform","translate("+ 0 + "," + 0 + ")");  
+.attr("transform","translate("+ 0 + "," + 0 + ")");
 
 
 
@@ -182,7 +175,7 @@ var vis = svg //for the visualization
 
 $("#key").click(function() {
     $(".keyCirc, .newlabel, .paperCirc, .journoCirc, .descriplabel").toggle();
-})   
+})
 
 var paperKeyCircle = vis.selectAll("paperCirc")
     .data(t)
@@ -199,7 +192,7 @@ var paperLabel = vis.selectAll("keylabel")
     .append("text").attr("class","newlabel")
     .attr("x", 34)
     .attr("y", startingYLabel-18)
-    .text("Colored Dot   Paper") 
+    .text("Colored Dot   Paper")
 
 var keyCircle = vis.selectAll("keyCirc")
    .data(t)
@@ -217,7 +210,7 @@ var keyLabel = vis.selectAll("keylabel")
     .append("text").attr("class","newlabel")
     .attr("x", 34)
     .attr("y", startingYLabel)
-    .text("White Dot   Major Keyword")     
+    .text("White Dot   Major Keyword")
 
 var journoTitle = vis.selectAll("keylabel")
         .data(t)
@@ -225,14 +218,14 @@ var journoTitle = vis.selectAll("keylabel")
         .append("text").attr("class","newlabel")
         .attr("x", 17)
         .attr("y", 391)
-        .text("Each color represents a medium:")    
+        .text("Each color represents a medium:")
 
  d3.select("#titlename").classed("selected", true);
     d3.select("#subtitlename").classed("selected", true);
     $("#titlename").slideDown("slow")
     $("#subtitlename").slideDown("slow")
 
-    
+
 
 /*** Import Data, sort and create nodes  ***/
 
@@ -244,45 +237,52 @@ var dataG = [];
 $(document).ready(function() {
 
   // start get - URI (REPLACE KEY WITH YOUR OWN, callback function)
-  
+  // https://docs.google.com/spreadsheets/d/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/edit?usp=sharing
   // see http://coderwall.com/p/duapqq for tutorial on using Google Spreadsheet as JSON
-    $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/oh09z64/public/values?alt=json", function(datoo) {
-    // 16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0
-        var entry = datoo.feed.entry;
-        console.log(entry);
-        for (i=0; i<entry.length; i++){
-            dataG.push({
-                "author": entry[i]['gsx$author']['$t'],
-                "keywords": entry[i]['gsx$keywords']['$t'],
-                "summary": entry[i]['gsx$summary']['$t'],
-                "link":entry[i]['gsx$link']['$t'],
-                "medium":entry[i]['gsx$medium']['$t'],
-                "year":entry[i]['gsx$year']['$t'],
-                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
-                "title":entry[i]['gsx$title']['$t'],
-            })
-        }
-        // console.log(dataG);
-        // loadData(dataG, filterNum);
-    }); // end get 
-    $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
-        var entry = datoo.feed.entry;
-        console.log(entry);
-        for (i=0; i<entry.length; i++){
-            dataG.push({
-                "author": entry[i]['gsx$author']['$t'],
-                "keywords": entry[i]['gsx$keywords']['$t'],
-                "summary": entry[i]['gsx$summary']['$t'],
-                "link":entry[i]['gsx$link']['$t'],
-                "medium":entry[i]['gsx$medium']['$t'],
-                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
-                "title":entry[i]['gsx$title']['$t'],
-            })
-        }
-        // console.log(dataG);
-                // loadData(dataG, filterNum);
+  // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
+  //
+  //
+  //   // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/oh09z64/public/values?alt=json", function(datoo) {
+  //   // 16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0
+  //       var entry = datoo.feed.entry;
+  //       console.log(entry);
+  //       for (i=0; i<entry.length; i++){
+  //           dataG.push({
+  //               "author": entry[i]['gsx$author']['$t'],
+  //               "keywords": entry[i]['gsx$keywords']['$t'],
+  //               "summary": entry[i]['gsx$summary']['$t'],
+  //               "link":entry[i]['gsx$link']['$t'],
+  //               "medium":entry[i]['gsx$medium']['$t'],
+  //               "year":entry[i]['gsx$year']['$t'],
+  //               "typeResearch":entry[i]['gsx$typeresearch']['$t'],
+  //               "title":entry[i]['gsx$title']['$t'],
+  //           })
+  //       }
+  //       // console.log(dataG);
+  //       // loadData(dataG, filterNum);
+  //   }); // end get
+    $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
+    // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
 
-    }); // end get 
+    // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
+        var entry = datoo.feed.entry;
+        console.log(entry);
+        for (i=0; i<entry.length; i++){
+            dataG.push({
+                "author": entry[i]['gsx$author']['$t'],
+                "keywords": entry[i]['gsx$keywords']['$t'],
+                "summary": entry[i]['gsx$summary']['$t'],
+                "link":entry[i]['gsx$link']['$t'],
+                "medium":entry[i]['gsx$medium']['$t'],
+                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
+                "title":entry[i]['gsx$title']['$t'],
+            })
+        }
+        console.log(dataG);
+        console.log(filterNum);
+                loadData(dataG, filterNum);
+
+    }); // end get
 
 
     // loadData(dataG, filterNum);
@@ -290,12 +290,12 @@ $(document).ready(function() {
 
 
 /*** Setting up Zoom Ability  ***/
-svg.call(d3.behavior.zoom() 
+svg.call(d3.behavior.zoom()
    .scale(1.0)
-   .scaleExtent([initialZoom, maxZoom]) 
+   .scaleExtent([initialZoom, maxZoom])
    .on("zoom", function(){
         var t = d3.event.translate;
-        var s = d3.event.scale;     
+        var s = d3.event.scale;
         zoomInOut(t, s);
     })
 );
@@ -305,217 +305,219 @@ svg.on("mousedown.zoom", null)
     .on("touchstart.zoom", null)
     .on("touchmove.zoom", null)
     .on("dblclick.zoom", null)
-    .on("touchend.zoom", null);   
+    .on("touchend.zoom", null);
 
 d3.select("#reset").on("click", resetZoom);
 
 
 
 /***********
-  FUNCTIONS 
+  FUNCTIONS
 ************/
 
 
 /***loadData()***/
 
 function loadData(dataName, filterNum){
-    
+console.log(dataName)
     citeNums.length = 0;  // number of times cited
     keywords.length = 0;  // number of unique keywords
     authors.length = 0;   // number of author names
-  
-    theseKeywords.length = 0; 
+
+    theseKeywords.length = 0;
     theseAuthors.length = 0;
-    
+
     journalTypes.length = 0;
-    
+
     totalAuthors.length = 0;
     totalKeywords.length = 0;
-    
+
     focusKeywords.length = 0;
-    
-    
+
+
     //load and organize data
     //old way
     // d3.csv(csvName, function(data) {
         thisData=(dataName);
     //old way
 
-    data = dataName;        
-        for (i = 0;i<data.length; i++){ 
-            
-            // if year data exists 
+    data = dataName;
+        for (i = 0;i<data.length; i++){
+
+            // if year data exists
             if(isNaN(data[i].year)==false){
                 years[i] = parseInt(data[i].year);
             }
-            
-            //if value doesnt exist else if it exists add to array 
+
+            //if value doesnt exist else if it exists add to array
             // if(isNaN(parseInt(thisData[i].value))){
             //      citeNums[i]=(0);
             // }else {
             //      citeNums[i]=(parseInt(thisData[i].value))
-            // }    
-            
+            // }
+
             /*MATRIX 1 array per entry*/
-            
-            //if keywords exist add to array 
+
+            //if keywords exist add to array
             if (data[i].keywords!="undefined"){
                 keywords[i] = data[i].keywords.split(", ");
             }
-            
-            // if originator exists add to array 
+
+            // if originator exists add to array
             if(data[i].author!="undefined"){
                 authors[i] = data[i].author.split(", ");
             }
-            
-            // 1 array with all the keywords 
+
+            // 1 array with all the keywords
             for (j=0; j<keywords[i].length; j++){
-                theseKeywords.push(keywords[i][j]);   
+                theseKeywords.push(keywords[i][j]);
             }
-            
+
              // 1 array with all the authors
             for (j=0; j<authors[i].length; j++){
-                theseAuthors.push(authors[i][j]);            
+                theseAuthors.push(authors[i][j]);
             }
-            
-            
-            
+
+
+
             // 1 array with corresponding Medium/ Journal Types
             if(data[i].medium!="undefined"&&data[i].medium.length!=0){
                 journalTypes[i] = data[i].medium.toLowerCase();
                }
-    }; 
-   
-    
+    };
+
+
     // remove empty keywords and authors entries
-        
+
     keywordSorted = false;
     authorsSorted = false;
-    
-    
-    for (i=0; i<theseKeywords.length; i++){ 
+
+    console.log(keywordSorted)
+    for (i=0; i<theseKeywords.length; i++){
         if(theseKeywords[i].length==0){
           theseKeywords.splice(i,1)
           i--;
         }
-        keywordSorted = true;  
+        console.log(keywordSorted)
+        keywordSorted = true;
     }
-    
 
-    for (i=0; i<theseAuthors.length; i++){ 
+
+    for (i=0; i<theseAuthors.length; i++){
         if(theseAuthors[i].length==0){
           theseAuthors.splice(i,1)
            i--;
         }
          authorsSorted = true;
     }
-   
+
 
     uniqueTypes = journalTypes.filter( onlyUnique ); //finds unique names onlyUnique is a function defined later
     uniqueTypes = uniqueTypes.sort();
     keyTypes = uniqueTypes;
-        
+
     //
     color = d3.scale.ordinal()
         .domain([0, uniqueTypes.length])
         .range(colorSpectrum);
-        
-        
+
+
     uniqueKeywords = theseKeywords.filter( onlyUnique ); //finds unique keywords
     uniqueAuthors = theseAuthors.filter( onlyUnique ); //finds unique keywords
-        
-        
+
+console.log(filterNum)
     //creates a new array with the sums of all the different Keywords and also creates list of focus Keywords
     if(keywordSorted==true){
+      console.log("keywordSorted")
         for (i = 0; i<theseKeywords.length; i++){
             totalKeywords[i]= keyConsolidation(theseKeywords[i])
-            mostKeyed = d3.max(totalKeywords); 
+            mostKeyed = d3.max(totalKeywords);
             if(totalKeywords[i]>mostKeyed*filterNum){
                 focusKeywords.push(theseKeywords[i]);
-            }
-        } 
+            } else{console.log("nope")}
+        }
     }
-        
+
     uniqueMostKeyed = focusKeywords.filter( onlyUnique ); //finds unique keywords from focused
     keyTypes = keyTypes.sort(); // alphabetical order
-        
-    
+
+
    /***FOR KEY ***/
-    var journoCircle = vis.selectAll("journoCirc")
-        .data(keyTypes)
-        .enter()
-        .append("circle")
-        .attr("class","journoCirc")
-        .attr("cy", function(d,i){
-            return i*18+407;
-        })
-        .attr("cx", 20)
-        .attr("fill", function(d){
-            return color(d)
-        })
-        .attr("r",radius)
+   //  var journoCircle = vis.selectAll("journoCirc")
+   //      .data(keyTypes)
+   //      .enter()
+   //      .append("circle")
+   //      .attr("class","journoCirc")
+   //      .attr("cy", function(d,i){
+   //          return i*18+407;
+   //      })
+   //      .attr("cx", 20)
+   //      .attr("fill", function(d){
+   //          return color(d)
+   //      })
+   //      .attr("r",radius)
 
-   var journoLabel = vis.selectAll("keylabel")
-        .data(keyTypes)
-        .enter()
-        .append("text").attr("class","newlabel")
-        .attr("y", function(d,i){
-            return i*18+411;
-        })
-        .attr("x", 34)
-        .text(function(d){ return toTitleCase(d); });   
+   // var journoLabel = vis.selectAll("keylabel")
+   //      .data(keyTypes)
+   //      .enter()
+   //      .append("text").attr("class","newlabel")
+   //      .attr("y", function(d,i){
+   //          return i*18+411;
+   //      })
+   //      .attr("x", 34)
+   //      .text(function(d){ return toTitleCase(d); });
 
-        createNodes();    
-    
-        
+        createNodes();
+
+
    /** Functions **/
-        
+
     //some magic function to return uniquevalues
-    function onlyUnique(value, index, self) { 
+    function onlyUnique(value, index, self) {
         return self.indexOf(value) === index;
-    } 
-        
-    //return number of times a keyword was used 
-    function keyConsolidation(givenKey,i) { 
+    }
+
+    //return number of times a keyword was used
+    function keyConsolidation(givenKey,i) {
         var total = 0;
-        for (i = 0;i<theseKeywords.length; i++){ 
+        for (i = 0;i<theseKeywords.length; i++){
             if(theseKeywords[i] == givenKey){
                 total++;
             }
         }
          return total;
-    } 
-        
+    }
+
     //return number of times an author name was cited
-    function authorConsolidation(givenAuthor,i) { 
+    function authorConsolidation(givenAuthor,i) {
         var total = 0;
-        for (i = 0;i<theseAuthors.length; i++){ 
+        for (i = 0;i<theseAuthors.length; i++){
             if(theseAuthors[i] == givenAuthor){
                 total++;
             }
         }
          return total;
-     } 
-   
+     }
+
     //return number of times an year was cited
-    function valueConsolidation(givenYear, i) { 
+    function valueConsolidation(givenYear, i) {
         var total = 0;
-        for (i = 0;i<data.length; i++){ 
+        for (i = 0;i<data.length; i++){
             if(data[i].year!="undefined" && data[i].year== givenYear){
                 total++;
             }
         }
          return total;
-     } 
-    
-    //return title of the journal entry 
+     }
+
+    //return title of the journal entry
     function toTitleCase(str){
         return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     }
-        
-        
+
+
     // }) //end of d3.csv...
-    
+
 } //end of function loadData()
 
 
@@ -523,40 +525,40 @@ function loadData(dataName, filterNum){
 function createNodes(){
     links = [];
     if(itsDone==false){
- 
-        for (i=0; i<thisData.length; i++){ 
-            for (j=0; j<uniqueMostKeyed.length; j++){ 
+
+        for (i=0; i<thisData.length; i++){
+            for (j=0; j<uniqueMostKeyed.length; j++){
                 if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-                    
-                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceTitle":thisData[i].medium.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link}) 
-                     
+
+                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceTitle":thisData[i].medium.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
+
                 }
             }
-        } 
+        }
         simpleNodes();
     }
-    
+
 }
 
 function simpleNodes(){
-    
+
     var thisMap;
     var thisWeight = [];
     var maxWeight;
-    
+
     // Compute the distinct nodes from the links.
 
     links.forEach(function(link) {
-        
-     
-        
+
+
+
       link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, cites:link.cites, sTitle:link.sourceTitle, tResearch: link.typeResearch, url: link.url, headline:link.headline, authors:link.authors});
-       
-          
+
+
       link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
 
     });
-    
+
     force = d3.layout.force()
         .nodes(d3.values(nodes))
         .links(links)
@@ -566,13 +568,13 @@ function simpleNodes(){
         .on("tick", tick)
         .start();
 
-    drag = force.drag() 
-        .on("dragstart", dragstart);   
+    drag = force.drag()
+        .on("dragstart", dragstart);
 
     path = vis.selectAll("path")
         .data(force.links())
         .enter().append("path")
-        .attr("class","link") 
+        .attr("class","link")
         .attr("stroke", function(d,i){
             for (k=0; k<uniqueTypes.length; k++){
                if(d.sourceTitle==uniqueTypes[k]){
@@ -582,7 +584,7 @@ function simpleNodes(){
             if(howLong.length>0){
             if(howLong[i][0].length==1){
                 return "white";
-            }        
+            }
             }
         })
 
@@ -595,11 +597,11 @@ function simpleNodes(){
             maxWeight = d3.max(thisWeight, function(d){ return d; })
             rMap = d3.scale.linear()
                 .domain([0,maxWeight])
-                .range([radius, radius*9])  
+                .range([radius, radius*9])
 
             return "node";
-        })  
-    
+        })
+
     circle
         .attr("r", function(d,i){
             return radius/10;
@@ -617,22 +619,22 @@ function simpleNodes(){
             // if()
             if(howLong[i][0].length>1 && d.tResearch=="project"){
                 return "pink";
-            }  
+            }
             if(howLong[i][0].length>1 && d.tResearch=="reading"){
                 return "grey";
-            }  
+            }
 
             if(howLong.length>0){
                 if(howLong[i][0].length==1){
                     return "white";
-                }        
+                }
             }
         })
         .attr("stroke", function(d,i){
-            if(howLong.length>0){    
+            if(howLong.length>0){
                 if(howLong[i][0].length==1){
-                    return "black";
-                } 
+                    return "grey";
+                }
                 for (k=0; k<uniqueTypes.length; k++){
                    if(d.sTitle==uniqueTypes[k]){
                         return color(k);
@@ -640,17 +642,17 @@ function simpleNodes(){
                 }
                 // if(howLong[i][0].length>1 && d.tResearch=="project"){
                 //     return "pink";
-                // }  
+                // }
                 // if(howLong[i][0].length>1 && d.tResearch=="reading"){
                 //     return "grey";
-                // }  
+                // }
             }
         })
         .attr("stroke-width", function(d,i){
-            if(howLong.length>0){    
+            if(howLong.length>0){
                 if(howLong[i][0].length==1){
-                    return .1;
-                } 
+                    return 1;
+                }
                 for (k=0; k<uniqueTypes.length; k++){
                    if(d.sTitle==uniqueTypes[k]){
                         return 3;
@@ -658,18 +660,19 @@ function simpleNodes(){
                 }
                 // if(howLong[i][0].length>1 && d.tResearch=="project"){
                 //     return "pink";
-                // }  
+                // }
                 // if(howLong[i][0].length>1 && d.tResearch=="reading"){
                 //     return "grey";
-                // }  
+                // }
             }
         })
 
         .attr("opacity", function(d,i){
-            thisMap = d3.scale.linear()
-                .domain([0,maxNodeCited])
-                .range([.9, 1])  
-            return thisMap(nodeCited[i]);       
+            // thisMap = d3.scale.linear()
+            //     .domain([0,maxNodeCited])
+            //     .range([.9, 1])
+            // return thisMap(nodeCited[i]);
+            .4;
         })
 
         .on("dblclick", dblclick)
@@ -701,7 +704,8 @@ function simpleNodes(){
         d3.select(this).classed("fixed", d.fixed = true);
     }
 
-    console.log("simple nodes")
+    console.log("sSIMPLEPALDKAPSLKD")
+
 
     text= vis.selectAll("labels")
         .data(force.nodes())
@@ -711,14 +715,14 @@ function simpleNodes(){
         .attr("y", ".31em")
         .attr("text-anchor", "start")
         .text(function(d,i) {
-            if(howLong.length>1){
+            if(howLong.length>1){ //only major keywords
                 if(howLong[i][0].length==1){
-                     return d.name;           
-                }        
-            } 
+                     return d.name;
+                }
+            }
         });
-    
-    // $(".labels").show();  
+
+    $(".labels").show();
     // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
       path.attr("d", linkArc);
@@ -729,22 +733,22 @@ function simpleNodes(){
 
     function transform(d) {
       d.x = Math.max(radius, Math.min(w - radius, d.x));
-      d.y = Math.max(radius, Math.min(h - radius, d.y));   
+      d.y = Math.max(radius, Math.min(h - radius, d.y));
       return "translate(" + d.x+ "," + d.y + ")";
     }
 
     $('circle').tipsy({
-        gravity: 'w', 
-        html: true, 
-        delayIn: 500, 
+        gravity: 'w',
+        html: true,
+        delayIn: 500,
         title: function() {
 
-            var d = this.__data__;  
+            var d = this.__data__;
                 console.log(d);
             if (d.name[0].length==1){
              return "Major Keyword: "+d.name;
             } else{
-                 return "Title:"+ '<br>'+d.headline+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;                
+                 return "Title:"+ '<br>'+d.headline+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;
             }
         }
     });
@@ -755,7 +759,7 @@ function simpleNodes(){
     d3.select("#citeRate").classed("selected", true);
 }
 
-    
+
 function stopBigNet(){
     force.stop()
     circle
@@ -764,13 +768,13 @@ function stopBigNet(){
         .attr("transform", newTransform);
     path
         .transition()
-        .duration(2000)    
+        .duration(2000)
         .attr("d", linkArc);
 
     function newTransform(d,i){
             d.y = h; //not links[i].cites
             return "translate(" + d.x+ "," + d.y + ")";
-    }     
+    }
 }
 
 function linkArc(d) {
@@ -782,7 +786,7 @@ function linkArc(d) {
 
 function transform(d) {
   d.x = Math.max(radius, Math.min(w - radius, d.x));
-  d.y = Math.max(radius, Math.min(h - radius, d.y));   
+  d.y = Math.max(radius, Math.min(h - radius, d.y));
   return "translate(" + d.x+ "," + d.y + ")";
 }
 
@@ -802,7 +806,7 @@ var zoomInOut = function(t, s) {
     vis.attr("transform",
       "translate("+d3.event.translate+ ")"
       + " scale(" + d3.event.scale + ")");
-};   
+};
 
 function resetZoom(){
     console.log("reset viz")
@@ -813,9 +817,3 @@ function resetZoom(){
     showReset = false;
     $('#reset').slideUp("slow");
 };
-
-
-
-
-
-
