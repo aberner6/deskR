@@ -151,7 +151,7 @@ var n;
 var maxNodeCited;
 
 var rMap;
-var circle, path, text;
+var circle, path, text, images;
 var force;
 var scaleRadius = 5;
 var howLong = [];
@@ -240,31 +240,15 @@ $(document).ready(function() {
   // https://docs.google.com/spreadsheets/d/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/edit?usp=sharing
   // see http://coderwall.com/p/duapqq for tutorial on using Google Spreadsheet as JSON
   // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
-  //
-  //
-  //   // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/oh09z64/public/values?alt=json", function(datoo) {
-  //   // 16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0
-  //       var entry = datoo.feed.entry;
-  //       console.log(entry);
-  //       for (i=0; i<entry.length; i++){
-  //           dataG.push({
-  //               "author": entry[i]['gsx$author']['$t'],
-  //               "keywords": entry[i]['gsx$keywords']['$t'],
-  //               "summary": entry[i]['gsx$summary']['$t'],
-  //               "link":entry[i]['gsx$link']['$t'],
-  //               "medium":entry[i]['gsx$medium']['$t'],
-  //               "year":entry[i]['gsx$year']['$t'],
-  //               "typeResearch":entry[i]['gsx$typeresearch']['$t'],
-  //               "title":entry[i]['gsx$title']['$t'],
-  //           })
-  //       }
-  //       // console.log(dataG);
-  //       // loadData(dataG, filterNum);
-  //   }); // end get
-    $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
     // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
 
     // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
+
+// francesca's
+    // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
+
+//mine ABB january 4
+    $.getJSON("https://spreadsheets.google.com/feeds/list/1EmyZhItPL5UDghf5ECEuiCyheaY6O5sttYLuUSGXbYM/od6/public/values?alt=json", function(datoo) {
         var entry = datoo.feed.entry;
         console.log(entry);
         for (i=0; i<entry.length; i++){
@@ -349,16 +333,6 @@ console.log(dataName)
             if(isNaN(data[i].year)==false){
                 years[i] = parseInt(data[i].year);
             }
-
-            //if value doesnt exist else if it exists add to array
-            // if(isNaN(parseInt(thisData[i].value))){
-            //      citeNums[i]=(0);
-            // }else {
-            //      citeNums[i]=(parseInt(thisData[i].value))
-            // }
-
-            /*MATRIX 1 array per entry*/
-
             //if keywords exist add to array
             if (data[i].keywords!="undefined"){
                 keywords[i] = data[i].keywords.split(", ");
@@ -530,8 +504,8 @@ function createNodes(){
         for (i=0; i<thisData.length; i++){
             for (j=0; j<uniqueMostKeyed.length; j++){
                 if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-
-                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceVal":thisData[i].sourceVal.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
+                    links.push({"source":keywords[i],"target":keywords[i],"img":thisData[i].title, "sourceVal":thisData[i].sourceVal, "url":thisData[i].link})
+                    // links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceVal":thisData[i].sourceVal.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
 
                 }
             }
@@ -585,17 +559,16 @@ function simpleNodes(){
         .attr("stroke", function(d,i){
           return valColor(d.sourceVal);
         })
-            // for (k=0; k<uniqueTypes.length; k++){
-            //    if(d.sourceTitle==uniqueTypes[k]){
-            //         return color(k);
-            //    }
-            // }
-            // if(howLong.length>0){
-            // if(howLong[i][0].length==1){
-            //     return "white";
-            // }
-            // }
-        // })
+
+
+  images = vis.selectAll("node")
+        .data(force.nodes())
+        .enter().append("svg:image")
+        .attr("xlink:href",  function(d) { return d.sourceVal;})
+        .attr("x", function(d) { return -25;})
+        .attr("y", function(d) { return -25;})
+        .attr("height", 50)
+        .attr("width", 50);
 
     circle = vis.selectAll("node")
         .data(force.nodes())
@@ -627,31 +600,6 @@ function simpleNodes(){
             }
             return valColor(d.sourceVal)
         })
-        
-        // .attr("stroke", function(d,i){
-        //     // if(howLong.length>0){
-        //     //     if(howLong[i][0].length==1){
-        //     //         return "grey";
-        //     //     }
-        //     //     for (k=0; k<uniqueTypes.length; k++){
-        //     //        if(d.sTitle==uniqueTypes[k]){
-        //     //             return color(k);
-        //     //        }
-        //     //     }
-        //     // }
-        // })
-        // .attr("stroke-width", function(d,i){
-        //     // if(howLong.length>0){
-        //     //     if(howLong[i][0].length==1){
-        //     //         return 1;
-        //     //     }
-        //     //     for (k=0; k<uniqueTypes.length; k++){
-        //     //        if(d.sTitle==uniqueTypes[k]){
-        //     //             return 3;
-        //     //        }
-        //     //     }
-        //     // }
-        // })
         .attr("opacity", function(d,i){
             .4;
         })
@@ -722,6 +670,9 @@ function simpleNodes(){
       circle
           .attr("transform", transform);
           text.attr("transform", transform);
+
+          images.attr("transform", transform);
+
     }
 
     function transform(d) {
