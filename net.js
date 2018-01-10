@@ -253,13 +253,11 @@ $(document).ready(function() {
         console.log(entry);
         for (i=0; i<entry.length; i++){
             dataG.push({
-                "author": entry[i]['gsx$author']['$t'],
-                "sourceVal": entry[i]['gsx$value']['$t'],
+                "author": entry[i]['gsx$collection']['$t'],
                 "keywords": entry[i]['gsx$keywords']['$t'],
-                "summary": entry[i]['gsx$summary']['$t'],
-                "link":entry[i]['gsx$link']['$t'],
-                "medium":entry[i]['gsx$medium']['$t'],
-                "typeResearch":entry[i]['gsx$typeresearch']['$t'],
+                "summary": entry[i]['gsx$what']['$t'],
+                "img":entry[i]['gsx$image']['$t'],
+                "url":entry[i]['gsx$link']['$t'],
                 "title":entry[i]['gsx$title']['$t'],
             })
         }
@@ -312,7 +310,7 @@ console.log(dataName)
     theseKeywords.length = 0;
     theseAuthors.length = 0;
 
-    journalTypes.length = 0;
+    // journalTypes.length = 0;
 
     totalAuthors.length = 0;
     totalKeywords.length = 0;
@@ -356,9 +354,9 @@ console.log(dataName)
 
 
             // 1 array with corresponding Medium/ Journal Types
-            if(data[i].medium!="undefined"&&data[i].medium.length!=0){
-                journalTypes[i] = data[i].medium.toLowerCase();
-               }
+            // if(data[i].medium!="undefined"&&data[i].medium.length!=0){
+            //     journalTypes[i] = data[i].medium.toLowerCase();
+            //    }
     };
 
 
@@ -387,14 +385,14 @@ console.log(dataName)
     }
 
 
-    uniqueTypes = journalTypes.filter( onlyUnique ); //finds unique names onlyUnique is a function defined later
-    uniqueTypes = uniqueTypes.sort();
-    keyTypes = uniqueTypes;
+    // uniqueTypes = journalTypes.filter( onlyUnique ); //finds unique names onlyUnique is a function defined later
+    // uniqueTypes = uniqueTypes.sort();
+    // keyTypes = uniqueTypes;
 
     //
-    color = d3.scale.ordinal()
-        .domain([0, uniqueTypes.length])
-        .range(colorSpectrum);
+    // color = d3.scale.ordinal()
+    //     .domain([0, uniqueTypes.length])
+    //     .range(colorSpectrum);
 
 
     uniqueKeywords = theseKeywords.filter( onlyUnique ); //finds unique keywords
@@ -414,7 +412,7 @@ console.log(filterNum)
     }
 
     uniqueMostKeyed = focusKeywords.filter( onlyUnique ); //finds unique keywords from focused
-    keyTypes = keyTypes.sort(); // alphabetical order
+    // keyTypes = keyTypes.sort(); // alphabetical order
 
 
    /***FOR KEY ***/
@@ -504,7 +502,9 @@ function createNodes(){
         for (i=0; i<thisData.length; i++){
             for (j=0; j<uniqueMostKeyed.length; j++){
                 if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-                    links.push({"source":keywords[i],"target":keywords[i],"img":thisData[i].title, "sourceVal":thisData[i].sourceVal, "url":thisData[i].link})
+                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"img":thisData[i].img, "url":thisData[i].url})
+
+                    // links.push({"source":keywords[i],"target":keywords[i],"img":thisData[i].img, "url":thisData[i].url})
                     // links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceVal":thisData[i].sourceVal.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
 
                 }
@@ -533,7 +533,7 @@ function simpleNodes(){
 
 
 
-      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, sourceVal:link.sourceVal, sTitle:link.sourceTitle, tResearch: link.typeResearch, url: link.url, headline:link.headline, authors:link.authors});
+      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, img:link.img});
 
 
       link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
@@ -552,79 +552,81 @@ function simpleNodes(){
     drag = force.drag()
         .on("dragstart", dragstart);
 
-    path = vis.selectAll("path")
-        .data(force.links())
-        .enter().append("path")
-        .attr("class","link")
-        .attr("stroke", function(d,i){
-          return valColor(d.sourceVal);
-        })
-
 
   images = vis.selectAll("node")
         .data(force.nodes())
         .enter().append("svg:image")
-        .attr("xlink:href",  function(d) { return d.sourceVal;})
-        .attr("x", function(d) { return -25;})
-        .attr("y", function(d) { return -25;})
-        .attr("height", 50)
-        .attr("width", 50);
-
-    circle = vis.selectAll("node")
-        .data(force.nodes())
-        .enter().append("circle")
-        .attr("class",function(d){
+        .attr("xlink:href",  function(d) { console.log(d.img); return d.img;})
+        .attr("x", function(d) { 
             howLong.push(d.name);
-            thisWeight.push(d.weight);
-            maxWeight = d3.max(thisWeight, function(d){ return d; })
-            rMap = d3.scale.linear()
-                .domain([0, maxWeight])
-                .range([radius, radius*9])
 
-            return "node";
-        })
+            return -25;})
+        .attr("y", function(d) { return -25;})
+        .attr("height", 100)
+        .attr("width", 100)
+                .call(drag);
 
-    circle
-        .attr("r", function(d,i){
-            return radius/10;
-        })
-        .attr("fill", function(d,i){
-            if(howLong[i][0].length==1){
-                return "white";
-            }
-            return valColor(d.sourceVal)
-        })
-        .attr("stroke", function(d,i){
-            if(howLong[i][0].length==1){
-                return greyColor;
-            }
-            return valColor(d.sourceVal)
-        })
-        .attr("opacity", function(d,i){
-            .4;
-        })
 
-        .on("dblclick", dblclick)
-        .on("click", function(d){
-            if (d.name[0].length==1){
-                //do nothing
-                console.log("nada")
-            }else{
-                var thisLink = d.url;
-                var win = window.open(thisLink, '_blank');
-            }
-        })
-        .call(drag);
+    path = vis.selectAll("path")
+        .data(force.links())
+        .enter().append("path")
+        .attr("class","link")
+        .attr("stroke", "grey")
+    // circle = vis.selectAll("node")
+    //     .data(force.nodes())
+    //     .enter().append("circle")
+    //     .attr("class",function(d){
+    //         howLong.push(d.name);
+    //         thisWeight.push(d.weight);
+    //         maxWeight = d3.max(thisWeight, function(d){ return d; })
+    //         rMap = d3.scale.linear()
+    //             .domain([0, maxWeight])
+    //             .range([radius, radius*9])
 
-    circle
-        .transition()
-        .duration(2000)
-        .attr("r", function(d,i){
-            if(howLong[i][0].length==1){
-                return rMap(d.weight);
-            }
-            return radius;
-        });
+    //         return "node";
+    //     })
+
+    // circle
+    //     .attr("r", function(d,i){
+    //         return radius/10;
+    //     })
+    //     .attr("fill", function(d,i){
+    //         if(howLong[i][0].length==1){
+    //             return "white";
+    //         }
+    //         return valColor(d.sourceVal)
+    //     })
+    //     .attr("stroke", function(d,i){
+    //         if(howLong[i][0].length==1){
+    //             return greyColor;
+    //         }
+    //         return valColor(d.sourceVal)
+    //     })
+    //     .attr("opacity", function(d,i){
+    //         .4;
+    //     })
+
+    //     .on("dblclick", dblclick)
+    //     .on("click", function(d){
+    //         if (d.name[0].length==1){
+    //             //do nothing
+    //             console.log("nada")
+    //         }else{
+    //             var thisLink = d.url;
+    //             var win = window.open(thisLink, '_blank');
+    //         }
+    //     })
+    //     .call(drag);
+
+    // circle
+    //     .transition()
+    //     .duration(2000)
+    //     .attr("r", function(d,i){
+    //         if(howLong[i][0].length==1){
+    //             return rMap(d.weight);
+    //         }
+    //         return radius;
+    //     });
 
 
 
@@ -657,6 +659,8 @@ function simpleNodes(){
         .attr("text-anchor", "start")
         .text(function(d,i) {
             if(howLong.length>1){ //only major keywords
+                            console.log(d.name);
+
                 if(howLong[i][0].length==1){
                      return d.name;
                 }
@@ -666,9 +670,9 @@ function simpleNodes(){
     $(".labels").show();
     // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
-      path.attr("d", linkArc);
-      circle
-          .attr("transform", transform);
+        path.attr("d", linkArc);
+      // circle
+      //     .attr("transform", transform);
           text.attr("transform", transform);
 
           images.attr("transform", transform);
@@ -681,21 +685,21 @@ function simpleNodes(){
       return "translate(" + d.x+ "," + d.y + ")";
     }
 
-    $('circle').tipsy({
-        gravity: 'w',
-        html: true,
-        delayIn: 500,
-        title: function() {
+    // $('circle').tipsy({
+    //     gravity: 'w',
+    //     html: true,
+    //     delayIn: 500,
+    //     title: function() {
 
-            var d = this.__data__;
-                console.log(d);
-            if (d.name[0].length==1){
-             return "Major Keyword: "+d.name;
-            } else{
-                 return "Title:"+ '<br>'+d.headline+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;
-            }
-        }
-    });
+    //         var d = this.__data__;
+    //             console.log(d);
+    //         if (d.name[0].length==1){
+    //          return "Major Keyword: "+d.name;
+    //         } else{
+    //              return "Title:"+ '<br>'+d.headline+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;
+    //         }
+    //     }
+    // });
     $('#clickZoom').fadeIn();
 
     var c = false;
