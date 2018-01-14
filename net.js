@@ -160,10 +160,10 @@ var thisPaperName;
 
 
 
-svg = d3.select("#container")
-    .append("svg")
-    .attr("width", w)
-    .attr("height", h)
+// svg = d3.select("#container")
+//     .append("svg")
+//     .attr("width", w)
+//     .attr("height", h)
 
 var vis = svg //for the visualization
 .append('svg:g')
@@ -556,10 +556,13 @@ function simpleNodes(){
   images = vis.selectAll("node")
         .data(force.nodes())
         .enter().append("svg:image")
-        .attr("xlink:href",  function(d) { console.log(d.img); return d.img;})
+        .attr("xlink:href",  function(d) { 
+            // console.log(d.img); 
+            return d.img;
+        })
         .attr("x", function(d) { 
             howLong.push(d.name);
-
+            console.log(howLong)
             return -25;})
         .attr("y", function(d) { return -25;})
         .attr("height", 100)
@@ -647,8 +650,6 @@ function simpleNodes(){
         d3.select(this).classed("fixed", d.fixed = true);
     }
 
-    console.log("sSIMPLEPALDKAPSLKD")
-
 
     text= vis.selectAll("labels")
         .data(force.nodes())
@@ -659,10 +660,11 @@ function simpleNodes(){
         .attr("text-anchor", "start")
         .text(function(d,i) {
             if(howLong.length>1){ //only major keywords
-                            console.log(d.name);
-
-                if(howLong[i][0].length==1){
-                     return d.name;
+                console.log(d.name);
+                if(i>0){
+                    if(howLong[i][0].length==1){
+                         return d.name;
+                    }
                 }
             }
         });
