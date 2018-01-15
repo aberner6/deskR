@@ -557,18 +557,18 @@ function simpleNodes(){
         .data(force.nodes())
         .enter().append("svg:image")
         .attr("xlink:href",  function(d) { 
-            // console.log(d.img); 
             return d.img;
         })
         .attr("class","imgs")
         .attr("x", function(d) { 
             howLong.push(d.name);
-            console.log(howLong)
+            // console.log(howLong)
             return -25;})
         .attr("y", function(d) { return -25;})
-        .attr("height", 100)
-        .attr("width", 100)
-                .call(drag);
+
+        .attr("height", 1)
+        .attr("width", 1)
+        .call(drag);
 
 
     path = vis.selectAll("path")
@@ -661,7 +661,7 @@ function simpleNodes(){
         .attr("text-anchor", "start")
         .text(function(d,i) {
             if(howLong.length>1){ //only major keywords
-                console.log(d.name);
+                // console.log(d.name);
                 if(i>0){
                     if(howLong[i][0].length==1){
                          return d.name;
@@ -761,6 +761,38 @@ var zoomInOut = function(t, s) {
       + " scale(" + d3.event.scale + ")");
 };
 
+function chosen(keyIs){
+    var keyIs = keyIs;
+    images
+        .transition()
+        .attr("width", function(d){
+            if(d.name.length>1){
+                console.log("Greater")
+                for(var j=0; j<d.name.length; j++){
+                    console.log(d.name[j])
+                    if(d.name[j]==keyIs){
+                       return 100;
+                    } else{
+                        return 1;
+                    }
+                }
+            }
+        })
+        .attr("height", function(d){
+            if(d.name.length>1){
+                console.log("Greater")
+                for(var j=0; j<d.name.length; j++){
+                    console.log(d.name[j])
+                    if(d.name[j]==keyIs){
+                       return 100;
+                    } else{
+                        return 1;
+                    }
+                }
+            }
+        })
+}
+
 function resetZoom(){
     console.log("reset viz")
     vis.attr("transform",
@@ -770,3 +802,81 @@ function resetZoom(){
     showReset = false;
     $('#reset').slideUp("slow");
 };
+
+
+
+
+
+// var width = w;
+// var height = h;
+// svg
+//     .on("mousemove", mousemove)
+//     .on("mousedown", mousedown);
+// // var svg = d3.select("body").append("svg")
+// //     .attr("width", width)
+// //     .attr("height", height)
+// //     .on("mousemove", mousemove)
+// //     .on("mousedown", mousedown);
+
+// // svg.append("rect")
+// //     .attr("width", width)
+// //     .attr("height", height);
+
+// // var nodes = force.nodes(),
+// //     links = force.links(),
+//     var node = vis.selectAll(".node"),
+//     link = vis.selectAll(".link");
+
+// var cursor = vis.append("circle")
+//     .attr("r", 30)
+//     .attr("transform", "translate(-100,-100)")
+//     .attr("class", "cursor");
+
+// restart();
+
+// function mousemove() {
+//   cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
+// }
+
+// function mousedown() {
+//   var point = d3.mouse(this),
+//       node = {x: point[0], y: point[1]},
+//       n = nodes.push(node);
+
+//   // add links to any nearby nodes
+//   nodes.forEach(function(target) {
+//     var x = target.x - node.x,
+//         y = target.y - node.y;
+//     if (Math.sqrt(x * x + y * y) < 30) {
+//       links.push({source: node, target: target});
+//     }
+//   });
+
+//   restart();
+// }
+
+// function tick() {
+//   link.attr("x1", function(d) { return d.source.x; })
+//       .attr("y1", function(d) { return d.source.y; })
+//       .attr("x2", function(d) { return d.target.x; })
+//       .attr("y2", function(d) { return d.target.y; });
+
+//   node.attr("cx", function(d) { return d.x; })
+//       .attr("cy", function(d) { return d.y; });
+// }
+
+// function restart() {
+//   link = link.data(links);
+
+//   link.enter().insert("line", ".node")
+//       .attr("class", "link");
+
+//   node = node.data(nodes);
+
+//   node.enter().insert("circle", ".cursor")
+//       .attr("class", "node")
+//       .attr("r", 5)
+//       .call(force.drag);
+
+//   force.start();
+// }
