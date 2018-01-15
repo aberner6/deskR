@@ -105,7 +105,7 @@
         }
 
         .labels{
-            font-size: 10px;
+            font-size: 12px;
             text-transform:lowercase;
             display:none;
         }
@@ -195,7 +195,14 @@
             font-size: 14pt;
             font-weight: 400;
         }
-
+        .button#audio {
+            top: 7%;
+            left: 50%;
+            margin-left: 10px;
+            display: none;
+            font-size: 14pt;
+            font-weight: 400;
+        }
         .button#key{
             position:absolute;
         /*    left:7px;
@@ -353,6 +360,8 @@
     
     <center>
     <div class="button" id="reset"> RESET </div>
+    <div class="button" id="audio"> AUDIO </div>
+
     </center>
 
     <!-- /*** KEY Description ***/ -->
@@ -384,13 +393,15 @@
     </div>
 <script>
 var w = window.outerWidth;
-var h = window.innerHeight-50;
+var h = window.innerHeight-100;
 var svg = d3.select("#container")
     .append("svg")
     .attr("width", w)
     .attr("height", h)
+// $("#audio").click(function(){ $.getScript("./files/main.js"); });
 </script>
 <script type="text/javascript" src="net.js"></script>
+
 <script src="./files/main.js"></script>
 
 </body>

@@ -217,8 +217,8 @@ var circie;
 
 
 
-var w = window.outerWidth;
-var h = window.innerHeight-50;
+// var w = window.outerWidth;
+// var h = window.innerHeight-50;
 var width, height;
 width = w;
 height = h;

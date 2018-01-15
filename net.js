@@ -11,9 +11,9 @@ var filterNum = .2;
 
 // SVG
 var svg;
-var w = window.outerWidth;
-var h = window.innerHeight-50;
-
+// var w = window.outerWidth;
+// var h = window.innerHeight-50;
+// h = h-500;
 // for Key
 var startingX = 20;
 var startingY = 349;//523;
@@ -255,7 +255,7 @@ $(document).ready(function() {
             dataG.push({
                 "author": entry[i]['gsx$collection']['$t'],
                 "keywords": entry[i]['gsx$keywords']['$t'],
-                "summary": entry[i]['gsx$what']['$t'],
+                "why": entry[i]['gsx$why']['$t'],
                 "img":entry[i]['gsx$image']['$t'],
                 "url":entry[i]['gsx$link']['$t'],
                 "title":entry[i]['gsx$title']['$t'],
@@ -502,7 +502,7 @@ function createNodes(){
         for (i=0; i<thisData.length; i++){
             for (j=0; j<uniqueMostKeyed.length; j++){
                 if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"img":thisData[i].img, "url":thisData[i].url})
+                    links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"img":thisData[i].img, "url":thisData[i].url, "why":thisData[i].why})
 
                     // links.push({"source":keywords[i],"target":keywords[i],"img":thisData[i].img, "url":thisData[i].url})
                     // links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceVal":thisData[i].sourceVal.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
@@ -533,7 +533,7 @@ function simpleNodes(){
 
 
 
-      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, img:link.img});
+      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, img:link.img, why: link.why});
 
 
       link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
@@ -545,7 +545,7 @@ function simpleNodes(){
         .links(links)
         .size([w, h])
         .linkDistance(80)
-        .charge(-800)
+        .charge(-300)
         .on("tick", tick)
         .start();
 
@@ -560,6 +560,7 @@ function simpleNodes(){
             // console.log(d.img); 
             return d.img;
         })
+        .attr("class","imgs")
         .attr("x", function(d) { 
             howLong.push(d.name);
             console.log(howLong)
@@ -687,19 +688,21 @@ function simpleNodes(){
       return "translate(" + d.x+ "," + d.y + ")";
     }
 
-    // $('circle').tipsy({
+    // $('image').tipsy({
     //     gravity: 'w',
     //     html: true,
     //     delayIn: 500,
     //     title: function() {
-
+    //         // console.log
     //         var d = this.__data__;
     //             console.log(d);
-    //         if (d.name[0].length==1){
-    //          return "Major Keyword: "+d.name;
-    //         } else{
-    //              return "Title:"+ '<br>'+d.headline+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;
-    //         }
+    //         return d.why;
+
+    //         // if (d.name[0].length==1){
+    //         //  return "Major Keyword: "+d.name;
+    //         // } else{
+    //              // return "Title:"+ '<br>'+d.why+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;
+    //         // }
     //     }
     // });
     $('#clickZoom').fadeIn();
