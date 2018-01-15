@@ -566,8 +566,8 @@ function simpleNodes(){
             return -25;})
         .attr("y", function(d) { return -25;})
 
-        .attr("height", 1)
-        .attr("width", 1)
+        .attr("height", 100)
+        .attr("width", 100)
         .call(drag);
 
 
@@ -682,6 +682,7 @@ function simpleNodes(){
 
     }
 
+
     function transform(d) {
       d.x = Math.max(radius, Math.min(w - radius, d.x));
       d.y = Math.max(radius, Math.min(h - radius, d.y));
@@ -711,7 +712,19 @@ function simpleNodes(){
     $('#citeRate').slideDown();
     d3.select("#citeRate").classed("selected", true);
 }
+    function transformUp(d) {
 
+      // d.x = w/2;
+      // Math.max(radius, Math.min(w - radius, d.x));
+      d.y = 1;
+      return "translate(" + d.x + "," + d.y + ")";
+    }
+    function transformDown(d) {
+        // return ""
+      // d.x = w/2;
+      d.y = h/2;
+      return "translate(" + d.x+ "," + d.y + ")";
+    }
 
 function stopBigNet(){
     force.stop()
@@ -763,34 +776,36 @@ var zoomInOut = function(t, s) {
 
 function chosen(keyIs){
     var keyIs = keyIs;
+    force.stop();
     images
         .transition()
-        .attr("width", function(d){
+        .attr("transform", function(d){
             if(d.name.length>1){
-                console.log("Greater")
                 for(var j=0; j<d.name.length; j++){
-                    console.log(d.name[j])
                     if(d.name[j]==keyIs){
-                       return 100;
+                       return transformDown(d);
                     } else{
-                        return 1;
+                        return transformUp(d);
                     }
                 }
             }
         })
-        .attr("height", function(d){
+    text
+        .transition()
+        .attr("transform", function(d){
             if(d.name.length>1){
-                console.log("Greater")
                 for(var j=0; j<d.name.length; j++){
-                    console.log(d.name[j])
                     if(d.name[j]==keyIs){
-                       return 100;
+                       return transformDown(d);
                     } else{
-                        return 1;
+                        return transformUp(d);
                     }
                 }
             }
         })
+    path
+        .transition()
+        .attr("d", linkArc)
 }
 
 function resetZoom(){
