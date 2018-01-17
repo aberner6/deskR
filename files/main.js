@@ -244,26 +244,18 @@ svg //for the visualization
 
 
 
-
+var firstVoice = $('audio#sm');
 
   var force2 = d3.layout.force()
       .size([width, height])
-      .nodes([{x: width/2, y: height/2, a: ""}]) // initialize with a single node
-      // .linkDistance(30)
-      // .charge(-60)
+      .nodes([{x: width/2, y: height/2, a: "firstVoice" }]) // initialize with a single node
+      .linkDistance(30)
+      .charge(-60)
       .on("tick", tick2); //original
-
-    // .charge(function(d){
-    //     var charge = -300;
-    //     if (d.index === 0) charge = 10 * charge;
-    //     return charge;
-    // })
-    force2.gravity(0);
-    // force2.linkDistance(height/6);
-    // force2.linkStrength(0.1);
-    force2.charge(function(node) {
-       return node2.graph === 0 ? -30 : -300;
-    });
+    // force2.gravity(0);
+    // force2.charge(function(node) {
+    //    return node2.graph === 0 ? -30 : -300;
+    // });
 
   // svg.append("rect")
   //     .attr("width", width)
@@ -360,21 +352,44 @@ var punta;
           // console.log(i);
           //this has to be the age within the connected nodes
           // return i*.1
-          return 1;
+          return .5;
         })
         .on("mouseover", function(d){
-          console.log(d);
             var playThis = d.a;
-            playThis.currentTime = 0;
-            playThis.play();
+            // var playSus = d.a[0];
+            if(d.a=="firstVoice"){
+              firstVoice[0].currentTime = 0;
+              firstVoice[0].play()
+            }else{
+              playThis.currentTime = 0;
+              playThis.play();
+            }
             d3.select(this).transition().attr("fill","gray")
+            d3.select(this).classed("fixed", d.fixed = true);
         })
         .on("mouseout", function(d){
             var playThis = d.a;
-            playThis.pause();  
-            d3.select(this).transition().attr("fill","aquamarine")
+            if(d.a=="firstVoice"){
+              firstVoice[0].pause()
+            }else{
+              playThis.pause();  
+            }
+            d3.select(this).transition().attr("fill","red")
+            // d3.select(this).classed("fixed", d.fixed = false);
+        })
+        .transition()
+        .attr("r", function(d){
+          if(d.a=="firstVoice"){
+            return 100;
+          } else return 10;
         })
   }
+var drag = force2.drag()
+  .on("dragstart", dragstart);
+
+function dragstart(d) {
+  d3.select(this).classed("fixed", d.fixed = true);
+}
 //touch a color to show that it's a question or  acriticsm or praise
 //age of the comments
   function restart() {
@@ -389,8 +404,8 @@ var punta;
 
     node2.enter().insert("circle", ".cursor")
         .attr("class", "node")
-        .attr("fill","black")
-        .attr("r", 10) //adding here?
+        .attr("fill","red")
+        .attr("r", 100) //adding here?
         .call(force2.drag);
 
     force2.start();

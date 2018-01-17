@@ -338,7 +338,9 @@
             margin-left:-159px;
             background: white;
         }
-        
+        #sm{
+            display:none;
+        }
     </style>
 </head>
     
@@ -384,7 +386,9 @@
       </center>
     </div>
     <div>
-      <ul  class="list-unstyled" id='ul'></ul>
+      <ul  class="list-unstyled" id='ul'>
+          <audio controls=""= id="sm" src="SM-Jeu_3.m4a"></audio>
+      </ul>
     </div>
     <!-- /*** CONTAINER for nodes ***/ -->
     <div id = "container">
@@ -400,9 +404,9 @@ var svg = d3.select("#container")
     .attr("height", h)
 // $("#audio").click(function(){ $.getScript("./files/main.js"); });
 </script>
-<script type="text/javascript" src="net.js"></script>
+<script type="text/javascript" src="jeuNet.js"></script>
 
-<!-- <script src="./files/main.js"></script> -->
+<script src="./files/main.js"></script>
 
 </body>
 </html>
