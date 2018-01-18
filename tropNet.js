@@ -121,7 +121,7 @@ var colorSpectrum = [
 
 var initialZoom = 1,
     maxZoom = 10;
-
+var indexing = 0;
 
 var exitK;
 var returnK;
@@ -152,6 +152,7 @@ var maxNodeCited;
 
 var rMap;
 var circle, path, text, images;
+var images;
 var force;
 var scaleRadius = 5;
 var howLong = [];
@@ -527,7 +528,7 @@ function createNodes(){
 
 }
 
-
+var callback1;
 var valColor = d3.scale.ordinal()
   .domain(["low","mid","high"])
   .range(["#66ccff","#009933","#ff5050"])
@@ -581,16 +582,85 @@ var angle2, x2, y2;
         .attr("xlink:href",  function(d) { 
             return d.img;
         })
-        .attr("class","imgs")
         .attr("x", function(d) { 
             howLong.push(d.name);
-            // console.log(howLong)
-            return -25;})
+            return -25;
+        })
         .attr("y", function(d) { return -25;})
+        .attr("height", h/3)
+        .attr("width", h/3)
+        .attr("transform", function(d,i){
+          return "translate(" + w + "," + h/4 + ")";
+        });
+        
+        var move = setInterval(function(){
+            console.log(indexing)
+            images
+                .transition()
+                .attr("transform", function(d,i){
+                    if(d.img==undefined){
+                    }else{
+                        if (indexing==i){
+                            var moveIt = d3.select(this);
+                            return transformAcross1(moveIt);
+                        }else{
+                            return "translate(" + w + "," + 0 + ")";
+                        }
+                    }
+                });
+            indexing++;
+            if (indexing == force.nodes().length){
+                clearInterval(move);            
+            }
+        }, 1000)
 
-        .attr("height", 100)
-        .attr("width", 100)
-        .call(drag);
+
+                // function takeCirclesOut(){
+                //     index = 0;
+                //     svg.selectAll("circle").remove();
+                // }
+    function transformAcross1(d) {
+        console.log(d);
+      d.x = w/2-h/6;
+      d.y = h/4;
+      return "translate(" + d.x+ "," + d.y + ")";
+    }
+    function transformAcross2(d, i) {
+      d.x = -h/3;
+      d.y = h/4;
+      return "translate(" + d.x+ "," + d.y + ")";
+    }
+
+
+    // callback1 = function(){
+    //     images
+    //         .transition()
+    //         .duration(2000)
+    //         .delay(function(d, i) { return 500; })
+    //         .attr("transform", transformAcross1)
+    //         .each("end", function(d){
+    //             d3.select(this)
+    //                 .transition()
+    //                 .duration(2000)
+    //                 .delay(function(d, i) { return 500; })
+    //                 .attr("transform", transformAcross2)
+    //                 // .each("end", callback1)        
+    //         })
+    // }
+
+    function doNothing(){
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
     path = vis.selectAll("path")
@@ -598,73 +668,6 @@ var angle2, x2, y2;
         .enter().append("path")
         .attr("class","link")
         .attr("stroke", "grey")
-    // circle = vis.selectAll("node")
-    //     .data(force.nodes())
-    //     .enter().append("circle")
-    //     .attr("class",function(d){
-    //         howLong.push(d.name);
-    //         thisWeight.push(d.weight);
-    //         maxWeight = d3.max(thisWeight, function(d){ return d; })
-    //         rMap = d3.scale.linear()
-    //             .domain([0, maxWeight])
-    //             .range([radius, radius*9])
-
-    //         return "node";
-    //     })
-
-    // circle
-    //     .attr("r", function(d,i){
-    //         return radius/10;
-    //     })
-    //     .attr("fill", function(d,i){
-    //         if(howLong[i][0].length==1){
-    //             return "white";
-    //         }
-    //         return valColor(d.sourceVal)
-    //     })
-    //     .attr("stroke", function(d,i){
-    //         if(howLong[i][0].length==1){
-    //             return greyColor;
-    //         }
-    //         return valColor(d.sourceVal)
-    //     })
-    //     .attr("opacity", function(d,i){
-    //         .4;
-    //     })
-
-    //     .on("dblclick", dblclick)
-    //     .on("click", function(d){
-    //         if (d.name[0].length==1){
-    //             //do nothing
-    //             console.log("nada")
-    //         }else{
-    //             var thisLink = d.url;
-    //             var win = window.open(thisLink, '_blank');
-    //         }
-    //     })
-    //     .call(drag);
-
-    // circle
-    //     .transition()
-    //     .duration(2000)
-    //     .attr("r", function(d,i){
-    //         if(howLong[i][0].length==1){
-    //             return rMap(d.weight);
-    //         }
-    //         return radius;
-    //     });
-
-
-
-
-
-
-
-
-
-
-
-
 
     function dblclick(d) {
         d3.select(this).classed("fixed", d.fixed = false);
@@ -696,16 +699,17 @@ var angle2, x2, y2;
     $(".labels").show();
     // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
-        path.attr("d", linkArcNorm);
+        // path.attr("d", linkArcNorm);
       // circle
       //     .attr("transform", transform);
-          text.attr("transform", transformSmall);
+          // text.attr("transform", transformSmall);
+          // images.attr("transform", transformCircular);
 
-          images.attr("transform", transform);
 
+          // images.attr("transform", transformAcross);
     }
 
-    function transform(d) {
+    function transformCircular(d) {
       return "translate(" + d.xIs + "," + d.yIs + ")";
     }
     var rad = 4;

@@ -562,8 +562,8 @@ function simpleNodes(){
         .attr("class","imgs")
         .attr("x", function(d) { 
             howLong.push(d.name);
-            // console.log(howLong)
-            return -25;})
+            return -25;
+        })
         .attr("y", function(d) { return -25;})
 
         .attr("height", 100)
