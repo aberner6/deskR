@@ -1,3 +1,16 @@
+
+// d3.selectAll("span.input.input--nariko")
+//     .style("opacity",1)
+    // d3.selectAll("span.input.input--nariko")
+    //     .transition()
+    //     .delay(7000)
+    //     .style("opacity",1)
+    // d3.select("h2")
+    //     .transition()
+    //     .delay(7000)
+    //     .text("But where are you from?")
+
+
 /*** Variables ***/
 //Datavis
 //number of keywords 0-1, 0 will give a lot of keywords
@@ -217,32 +230,9 @@ d3.select("#subtitlename").classed("selected", true);
 $("#titlename").slideDown("slow")
 $("#subtitlename").slideDown("slow")
 
-
-
-/*** Import Data, sort and create nodes  ***/
-
-// loadData("deskResearch.csv", filterNum)   // choose threshhold 0.001 to 1 to choose number of keywords to show
-//old day
-
 //new way
 var dataG = [];
 $(document).ready(function() {
-
-    // start get - URI (REPLACE KEY WITH YOUR OWN, callback function)
-    // https://docs.google.com/spreadsheets/d/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/edit?usp=sharing
-    // see http://coderwall.com/p/duapqq for tutorial on using Google Spreadsheet as JSON
-    // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
-    // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
-
-    // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
-
-    // francesca's
-    // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
-
-    //mine ABB january 4
-    // https://docs.google.com/spreadsheets/d/e/2PACX-1vRoIf5Kn2wYacBZkoQNsg2zi1ZTJ49_MVz6KmcHhCWORkN-gR-oFMjA0o9wy-WwI_se41vloWCK2yEJ/pubhtml
-    //susu spreadsheet:
-    //    $.getJSON("https://spreadsheets.google.com/feeds/list/1be64SqJAqvFSyx9Trh5QwMSP7MHXqPD_zXfvxZ8bzJs/od6/public/values?alt=json", function(datoo) {
     //troppenmuseum workshop speadsheet:
     $.getJSON("https://spreadsheets.google.com/feeds/list/1EmyZhItPL5UDghf5ECEuiCyheaY6O5sttYLuUSGXbYM/od6/public/values?alt=json", function(datoo) {
         var entry = datoo.feed.entry;
@@ -257,64 +247,21 @@ $(document).ready(function() {
                 "title": entry[i]['gsx$title']['$t'],
             })
         }
-        // console.log(dataG);
-        // console.log(filterNum);
         loadData(dataG, filterNum);
 
     }); // end get
-
-
-    // loadData(dataG, filterNum);
 }); // end document.ready
 
-
-/*** Setting up Zoom Ability  ***/
-// svg.call(d3.behavior.zoom()
-//     .scale(1.0)
-//     .scaleExtent([initialZoom, maxZoom])
-//     .on("zoom", function() {
-//         var t = d3.event.translate;
-//         var s = d3.event.scale;
-//         zoomInOut(t, s);
-//     })
-// );
-
-// // don't let people zoom in all of these ways - will mess up clicks etcs
-// svg.on("mousedown.zoom", null)
-//     .on("touchstart.zoom", null)
-//     .on("touchmove.zoom", null)
-//     .on("dblclick.zoom", null)
-//     .on("touchend.zoom", null);
-
-// d3.select("#reset").on("click", resetZoom);
-
-
-
-/***********
-  FUNCTIONS
-************/
 function loadData(dataName, filterNum) {
         // console.log(dataName)
         citeNums.length = 0; // number of times cited
         keywords.length = 0; // number of unique keywords
-        authors.length = 0; // number of author names
-
         theseKeywords.length = 0;
-        // theseAuthors.length = 0;
-
-        // journalTypes.length = 0;
-
-        totalAuthors.length = 0;
         totalKeywords.length = 0;
 
         focusKeywords.length = 0;
 
-
-        //load and organize data
-        //old way
-        // d3.csv(csvName, function(data) {
         thisData = (dataName);
-        //old way
 
         data = dataName;
         for (i = 0; i < data.length; i++) {
@@ -328,30 +275,12 @@ function loadData(dataName, filterNum) {
                 keywords[i] = data[i].keywords.split(", ");
             }
 
-            // // if originator exists add to array
-            // if(data[i].author!="undefined"){
-            //     authors[i] = data[i].author.split(", ");
-            // }
-
             // 1 array with all the keywords
             for (j = 0; j < keywords[i].length; j++) {
                 theseKeywords.push(keywords[i][j]);
             }
-
-            //  // 1 array with all the authors
-            // for (j=0; j<authors[i].length; j++){
-            //     theseAuthors.push(authors[i][j]);
-            // }
-
-            // 1 array with corresponding Medium/ Journal Types
-            // if(data[i].medium!="undefined"&&data[i].medium.length!=0){
-            //     journalTypes[i] = data[i].medium.toLowerCase();
-            //    }
         };
-        // remove empty keywords and authors entries
-
         keywordSorted = false;
-        // authorsSorted = false;
 
         console.log(keywordSorted)
         for (i = 0; i < theseKeywords.length; i++) {
@@ -363,24 +292,7 @@ function loadData(dataName, filterNum) {
             keywordSorted = true;
         }
 
-
-        // for (i = 0; i < theseAuthors.length; i++) {
-        //     if (theseAuthors[i].length == 0) {
-        //         theseAuthors.splice(i, 1)
-        //         i--;
-        //     }
-        //     authorsSorted = true;
-        // }
-        // uniqueTypes = journalTypes.filter( onlyUnique ); //finds unique names onlyUnique is a function defined later
-        // uniqueTypes = uniqueTypes.sort();
-        // keyTypes = uniqueTypes;
-
-        // color = d3.scale.ordinal()
-        //     .domain([0, uniqueTypes.length])
-        //     .range(colorSpectrum);
         uniqueKeywords = theseKeywords.filter(onlyUnique); //finds unique keywords
-        // uniqueAuthors = theseAuthors.filter(onlyUnique); //finds unique keywords
-
         console.log(filterNum)
             //creates a new array with the sums of all the different Keywords and also creates list of focus Keywords
         if (keywordSorted == true) {
@@ -395,34 +307,7 @@ function loadData(dataName, filterNum) {
                 }
             }
         }
-
         uniqueMostKeyed = focusKeywords.filter(onlyUnique); //finds unique keywords from focused
-        // keyTypes = keyTypes.sort(); // alphabetical order
-
-        /***FOR KEY ***/
-        //  var journoCircle = vis.selectAll("journoCirc")
-        //      .data(keyTypes)
-        //      .enter()
-        //      .append("circle")
-        //      .attr("class","journoCirc")
-        //      .attr("cy", function(d,i){
-        //          return i*18+407;
-        //      })
-        //      .attr("cx", 20)
-        //      .attr("fill", function(d){
-        //          return color(d)
-        //      })
-        //      .attr("r",radius)
-        // var journoLabel = vis.selectAll("keylabel")
-        //      .data(keyTypes)
-        //      .enter()
-        //      .append("text").attr("class","newlabel")
-        //      .attr("y", function(d,i){
-        //          return i*18+411;
-        //      })
-        //      .attr("x", 34)
-        //      .text(function(d){ return toTitleCase(d); });
-
         createNodes();
         /** Functions **/
 
@@ -440,18 +325,6 @@ function loadData(dataName, filterNum) {
             }
             return total;
         }
-
-        //return number of times an author name was cited
-        // function authorConsolidation(givenAuthor, i) {
-        //     var total = 0;
-        //     for (i = 0; i < theseAuthors.length; i++) {
-        //         if (theseAuthors[i] == givenAuthor) {
-        //             total++;
-        //         }
-        //     }
-        //     return total;
-        // }
-
         //return number of times an year was cited
         function valueConsolidation(givenYear, i) {
             var total = 0;
@@ -462,15 +335,13 @@ function loadData(dataName, filterNum) {
             }
             return total;
         }
-
         //return title of the journal entry
         function toTitleCase(str) {
             return str.replace(/\w\S*/g, function(txt) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
         }
-        // }) //end of d3.csv...
-    } //end of function loadData()
+    } 
 
 function createNodes() {
     links = [];
@@ -488,8 +359,6 @@ function createNodes() {
                             "url": thisData[i].url,
                             "why": thisData[i].why
                         })
-                        // links.push({"source":keywords[i],"target":keywords[i],"img":thisData[i].img, "url":thisData[i].url})
-                        // links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceVal":thisData[i].sourceVal.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
                     }
                 }
             }
@@ -509,19 +378,13 @@ function simpleNodes() {
     var thisMap;
     var thisWeight = [];
     var maxWeight;
-    // Compute the distinct nodes from the links.
-    // var mapYear = d3.scale.linear()
-    //                 .domain([1970, 2017])
-    //                 .range([0, links.length])
+
     links.sort(function(a, b) {
             return d3.ascending(a.year, b.year);
         })
-        // var majorNodes = [];
     var angle2, x2, y2;
     links.forEach(function(link, i) {
-        // console.log(mapYear(link.year));
         angle = (i / ((links.length) / 2)) * Math.PI; // Calculate the angle at which the element will be placed.
-        // For a semicircle, we would use (i / numNodes) * Math.PI.
         x = (radius * Math.cos(angle)) + (w / 2); // Calculate the x position of the element.
         y = (radius * Math.sin(angle)) + (h / 2); // Calculate the y position of the element.
 
@@ -579,64 +442,67 @@ for(i=0; i<nodeData.length; i++){
         .attr("transform", function(d, i) {
             return "translate(" + -w + "," + h / 4 + ")";
         });
+    text = vis.selectAll("labels")
+        .data(nodeImg)
+        .enter().append("text")
+        .attr("class", "labels")
+        .attr("x", -25)
+        .attr("y", -25)
+        .attr("text-anchor", "start")
+        .attr("transform", function(d, i) {
+            return "translate(" + -w + "," + h / 4 + ")";
+        })
+        .text(function(d, i) {
+            return d.name;
+        });
+    $(".labels").show();
 
-    var move = setInterval(function() {
-        var moveIt = d3.select(images[0][indexing]);
+    // var move = setInterval(function() {
+    //     var moveIt = d3.select(images[0][indexing]);
+    //     var moveTxt = d3.select(text[0][indexing]);
 
-        moveIt
-            .transition()
-            .duration(1000)
-            .attr("transform", transformAcross1(moveIt))
-            .attr("class","looked")
-            .each("end", function(d){
-                d3.select(this)
-                    .transition()
-                    .duration(2000)
-                    .attr("transform", function(d){
-                        if(d.name.includes("movement")){
-                        console.log(d.name)
-                            return transformAcross2(moveIt)
-                        } else{
-                            return transformAcross3(moveIt)
-                        }
-                    })
-            })
+    //     moveIt
+    //         .transition()
+    //         .duration(1000)
+    //         .attr("transform", transformAcross1(moveIt))
+    //         .attr("class","looked")
+    //         .each("end", function(d){
+    //             d3.select(this)
+    //                 .transition()
+    //                 .duration(2000)
+    //                 .attr("transform", function(d){
+    //                     if(d.name.includes("movement")){
+    //                     console.log(d.name)
+    //                         return transformAcross2(moveIt)
+    //                     } else{
+    //                         return transformAcross3(moveIt)
+    //                     }
+    //                 })
+    //         })                  
+    //     moveTxt
+    //         .transition()
+    //         .duration(1000)
+    //         .attr("transform", transformAcross1(moveTxt))
+    //         .attr("class","looked")
+    //         .each("end", function(d){
+    //             d3.select(this)
+    //                 .transition()
+    //                 .duration(2000)
+    //                 .attr("transform", function(d){
+    //                     if(d.name.includes("movement")){
+    //                     console.log(d.name)
+    //                         return transformAcross2(moveTxt)
+    //                     } else{
+    //                         return transformAcross3(moveTxt)
+    //                     }
+    //                 })
+    //         })  
+    //     indexing++;
+    //     if (indexing > nodeImg.length) {
+    //         clearInterval(move);
+    //     }
+    // }, 1000)
 
-
-
-
-        // images
-        //     .transition()
-        //     .duration(2000)
-        //     .attr("transform", function(d, i) {
-        //         if (indexing == i) { //bring it out and look at it
-        //             moveIt = d3.select(this).attr("class","looked");
-        //             return transformAcross1(moveIt);
-        //         } 
-        //         else {
-        //             return "translate(" + w + "," + h/4 + ")";
-        //         }
-        //     })
-        //     .transition()
-        //     .attr("transform", function(d, i) {
-        //         if(d3.select(this).classed("looked")&&d.name.includes("movement")){ 
-        //             return transformAcross2(d3.select(this));
-        //         }
-        //         else{
-        //             return "translate(" + -w + "," + h/4 + ")";
-        //         }
-        //     })                   
-        indexing++;
-        if (indexing > nodeImg.length) {
-            clearInterval(move);
-        }
-    }, 1000)
-
-
-    // function takeCirclesOut(){
-    //     index = 0;
-    //     svg.selectAll("circle").remove();
-    // }
     function transformAcross1(d) {
         d.x = w / 2 - h / 6;
         d.y = h / 4;
@@ -655,11 +521,11 @@ for(i=0; i<nodeData.length; i++){
     function doNothing() {
     }
 
-    path = vis.selectAll("path")
-        .data(force.links())
-        .enter().append("path")
-        .attr("class", "link")
-        .attr("stroke", "grey")
+    // path = vis.selectAll("path")
+    //     .data(force.links())
+    //     .enter().append("path")
+    //     .attr("class", "link")
+    //     .attr("stroke", "grey")
 
     function dblclick(d) {
         d3.select(this).classed("fixed", d.fixed = false);
@@ -667,37 +533,12 @@ for(i=0; i<nodeData.length; i++){
     function dragstart(d) {
         d3.select(this).classed("fixed", d.fixed = true);
     }
-
-    text = vis.selectAll("labels")
-        .data(force.nodes())
-        .enter().append("text")
-        .attr("class", "labels")
-        .attr("x", 0)
-        .attr("y", ".31em")
-        // .attr("y", "-1em")
-        .attr("text-anchor", "start")
-        .text(function(d, i) {
-            if (howLong.length > 1) { //only major keywords
-                // console.log(d);
-                if (i > 0) {
-                    if (howLong[i][0].length == 1) {
-                        majorNodes.push(d);
-                        return d.name;
-                    }
-                }
-            }
-        });
-    $(".labels").show();
-    // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
         // path.attr("d", linkArcNorm);
         // circle
         //     .attr("transform", transform);
         // text.attr("transform", transformSmall);
         // images.attr("transform", transformCircular);
-
-
-        // images.attr("transform", transformAcross);
     }
 
     function transformCircular(d) {
@@ -711,28 +552,6 @@ for(i=0; i<nodeData.length; i++){
         return "translate(" + d.x + "," + d.y + ")";
     }
 
-
-
-
-    // $('image').tipsy({
-    //     gravity: 'w',
-    //     html: true,
-    //     delayIn: 500,
-    //     title: function() {
-    //         // console.log
-    //         var d = this.__data__;
-    //             console.log(d);
-    //         return d.why;
-
-    //         // if (d.name[0].length==1){
-    //         //  return "Major Keyword: "+d.name;
-    //         // } else{
-    //              // return "Title:"+ '<br>'+d.why+'<br>'+'<br>'+"Keywords:"+'<br>'+d.name;
-    //         // }
-    //     }
-    // });
-    // $('#clickZoom').fadeIn();
-
     var c = false;
     $('#citeRate').slideDown();
     d3.select("#citeRate").classed("selected", true);
@@ -740,21 +559,6 @@ for(i=0; i<nodeData.length; i++){
 
 var radi = 50;
 var all = [];
-
-function transformUp(d) {
-
-    // d.x = w/2;
-    // Math.max(radius, Math.min(w - radius, d.x));
-    d.y = 1;
-    return "translate(" + d.x + "," + d.y + ")";
-}
-
-function transformDown(d) {
-    // return ""
-    // d.x = w/2;
-    d.y = h / 2;
-    return "translate(" + d.x + "," + d.y + ")";
-}
 
 function stopBigNet() {
     force.stop()
@@ -772,9 +576,6 @@ function stopBigNet() {
         return "translate(" + d.x + "," + d.y + ")";
     }
 }
-
-
-
 var xScale = d3.scale.linear()
     .domain([0, w])
     .range([w / 3, (w * 2 / 3)])
@@ -823,29 +624,6 @@ function transCirc(d) {
         return "translate(" + d.x + "," + d.y + ")";
 
     }
-    //old version
-    // function transform(d) {
-    //   d.x = Math.max(radius, Math.min(w - radius, d.x));
-    //   d.y = Math.max(radius, Math.min(h - radius, d.y));
-    //   return "translate(" + d.x+ "," + d.y + ")";
-    // }
-
-// var zoomInOut = function(t, s) {
-//     if (showReset == true) {
-//         $('#reset').slideDown("slow");
-//     }
-//     if (showReset == false) {
-//         $('#reset').slideUp("slow");
-//     }
-//     if (s >= initialZoom) {
-//         showReset = true;
-//     }
-//     if (s < initialZoom) {
-//         showReset = false;
-//     }
-//     vis.attr("transform",
-//         "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
-// };
 
 function chosen(keyIs) {
     var keyIs = keyIs;
@@ -880,89 +658,3 @@ function chosen(keyIs) {
         .transition()
         .attr("d", linkArc)
 }
-
-// function resetZoom() {
-//     console.log("reset viz")
-//     vis.attr("transform",
-//         "translate(" + 0 + "," + 0 + ")" + " scale(" + initialZoom + ")");
-
-//     showReset = false;
-//     $('#reset').slideUp("slow");
-// };
-
-
-
-
-// var width = w;
-// var height = h;
-// svg
-//     .on("mousemove", mousemove)
-//     .on("mousedown", mousedown);
-// // var svg = d3.select("body").append("svg")
-// //     .attr("width", width)
-// //     .attr("height", height)
-// //     .on("mousemove", mousemove)
-// //     .on("mousedown", mousedown);
-
-// // svg.append("rect")
-// //     .attr("width", width)
-// //     .attr("height", height);
-
-// // var nodes = force.nodes(),
-// //     links = force.links(),
-//     var node = vis.selectAll(".node"),
-//     link = vis.selectAll(".link");
-
-// var cursor = vis.append("circle")
-//     .attr("r", 30)
-//     .attr("transform", "translate(-100,-100)")
-//     .attr("class", "cursor");
-
-// restart();
-
-// function mousemove() {
-//   cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
-// }
-
-// function mousedown() {
-//   var point = d3.mouse(this),
-//       node = {x: point[0], y: point[1]},
-//       n = nodes.push(node);
-
-//   // add links to any nearby nodes
-//   nodes.forEach(function(target) {
-//     var x = target.x - node.x,
-//         y = target.y - node.y;
-//     if (Math.sqrt(x * x + y * y) < 30) {
-//       links.push({source: node, target: target});
-//     }
-//   });
-
-//   restart();
-// }
-
-// function tick() {
-//   link.attr("x1", function(d) { return d.source.x; })
-//       .attr("y1", function(d) { return d.source.y; })
-//       .attr("x2", function(d) { return d.target.x; })
-//       .attr("y2", function(d) { return d.target.y; });
-
-//   node.attr("cx", function(d) { return d.x; })
-//       .attr("cy", function(d) { return d.y; });
-// }
-
-// function restart() {
-//   link = link.data(links);
-
-//   link.enter().insert("line", ".node")
-//       .attr("class", "link");
-
-//   node = node.data(nodes);
-
-//   node.enter().insert("circle", ".cursor")
-//       .attr("class", "node")
-//       .attr("r", 5)
-//       .call(force.drag);
-
-//   force.start();
-// }

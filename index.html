@@ -15,15 +15,13 @@
 </head>
 
 <body>
-    <div id="header">RESEARCH NET</div>
-    <!-- <div id="subtitlename"> Sort by  <br>  </div> -->
-
-    <!-- /*** BUTTONS ***/ -->
-    <!--     <div class="button" id = "key">Key</div>
-    <div class="button" id = "year"> Year </div>
-    <div class="button" id = "medium"> Medium </div>   
-    <div class="button" id = "addedby"> Contributor </div>
-    <div class="button" id = "dateadded"> Date Added </div> -->
+    <div id = "form" action="">
+        <h2> How should the A.I. search for European heritage?</h2>
+        <textarea rows="5" cols="20">
+        </textarea>
+        <button onclick="myFunction()">Submit</button>
+<p id="demo"></p>
+    </div>
 
     <center>
         <div class="button" id="reset"> RESET </div>
@@ -49,9 +47,14 @@
     </div>
     <!-- /*** CONTAINER for nodes ***/ -->
     <div id="container">
-
     </div>
     <script>
+        var inputValue;
+        function myFunction() {
+            inputValue = this.value;
+            console.log(inputValue);
+        }
+
         var w = window.outerWidth;
         var h = window.innerHeight - 100;
         var svg = d3.select("#container")
