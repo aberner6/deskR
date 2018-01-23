@@ -1,14 +1,9 @@
-
-
-
 /*** Variables ***/
-
-
 //Datavis
 //number of keywords 0-1, 0 will give a lot of keywords
 var filterNum = .2;
 
-var radius = w/5;
+var radius = w / 5;
 
 // SVG
 var svg;
@@ -17,9 +12,9 @@ var svg;
 // h = h-500;
 // for Key
 var startingX = 20;
-var startingY = 349;//523;
+var startingY = 349; //523;
 var startingXLabel = 34;
-var startingYLabel = 351;//525;
+var startingYLabel = 351; //525;
 var t = [1];
 var keyTypes;
 //= ["Video","Article","Book","Exhibit","Installation","Paper","List", "Essay"];
@@ -100,24 +95,20 @@ var singleScale;
 var thisData = [];
 
 
-var uniqueKDone=false;
+var uniqueKDone = false;
 
 var theX = [];
 var maxEntries;
 var citeNums = [];
-    //Width and height
+//Width and height
 
 var newCircle;
 
 var color; //=  d3.scale.category20c();
 
 var colorSpectrum = [
-    "#fc5988"
-    ,"#b14a41"
-    ,"#6ab054"
-    ,"#8675ee"
-    ,"#fcb752"
-    ,"#89e2fe"]
+    "#fc5988", "#b14a41", "#6ab054", "#8675ee", "#fcb752", "#89e2fe"
+]
 
 var initialZoom = 1,
     maxZoom = 10;
@@ -133,13 +124,13 @@ var animateZoom = false;
 var showReset = false;
 var overallView = false;
 var loadIt;
-var itsDone=false;
+var itsDone = false;
 
 var fishEyeGo = false;
 
 var whatis = [];
 
-var saveOne=[];
+var saveOne = [];
 var thisY = [];
 var thisX = [];
 
@@ -167,8 +158,8 @@ var thisPaperName;
 //     .attr("height", h)
 
 var vis = svg //for the visualization
-.append('svg:g')
-.attr("transform","translate("+ 0 + "," + 0 + ")");
+    .append('svg:g')
+    .attr("transform", "translate(" + 0 + "," + 0 + ")");
 
 
 
@@ -181,50 +172,50 @@ $("#key").click(function() {
 var paperKeyCircle = vis.selectAll("paperCirc")
     .data(t)
     .enter()
-    .append("circle").attr("class","paperCirc")
+    .append("circle").attr("class", "paperCirc")
     .attr("cx", 20)
-    .attr("cy", startingY-20)
+    .attr("cy", startingY - 20)
     .attr("fill", 'rgb(251,180,174)')
-    .attr("r",radius)
+    .attr("r", radius)
 
 var paperLabel = vis.selectAll("keylabel")
     .data(t)
     .enter()
-    .append("text").attr("class","newlabel")
+    .append("text").attr("class", "newlabel")
     .attr("x", 34)
-    .attr("y", startingYLabel-18)
+    .attr("y", startingYLabel - 18)
     .text("Colored Dot   Paper")
 
 var keyCircle = vis.selectAll("keyCirc")
-   .data(t)
+    .data(t)
     .enter()
-    .append("circle").attr("class","keyCirc")
+    .append("circle").attr("class", "keyCirc")
     .attr("cx", 20)
     .attr("cy", startingY)
     .attr("fill", "white")
     .attr("stroke", "gray")
-    .attr("r",8)
+    .attr("r", 8)
 
 var keyLabel = vis.selectAll("keylabel")
     .data(t)
     .enter()
-    .append("text").attr("class","newlabel")
+    .append("text").attr("class", "newlabel")
     .attr("x", 34)
     .attr("y", startingYLabel)
     .text("White Dot   Major Keyword")
 
 var journoTitle = vis.selectAll("keylabel")
-        .data(t)
-        .enter()
-        .append("text").attr("class","newlabel")
-        .attr("x", 17)
-        .attr("y", 391)
-        .text("Each color represents a medium:")
+    .data(t)
+    .enter()
+    .append("text").attr("class", "newlabel")
+    .attr("x", 17)
+    .attr("y", 391)
+    .text("Each color represents a medium:")
 
- d3.select("#titlename").classed("selected", true);
-    d3.select("#subtitlename").classed("selected", true);
-    $("#titlename").slideDown("slow")
-    $("#subtitlename").slideDown("slow")
+d3.select("#titlename").classed("selected", true);
+d3.select("#subtitlename").classed("selected", true);
+$("#titlename").slideDown("slow")
+$("#subtitlename").slideDown("slow")
 
 
 
@@ -237,38 +228,38 @@ var journoTitle = vis.selectAll("keylabel")
 var dataG = [];
 $(document).ready(function() {
 
-  // start get - URI (REPLACE KEY WITH YOUR OWN, callback function)
-  // https://docs.google.com/spreadsheets/d/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/edit?usp=sharing
-  // see http://coderwall.com/p/duapqq for tutorial on using Google Spreadsheet as JSON
-  // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
+    // start get - URI (REPLACE KEY WITH YOUR OWN, callback function)
+    // https://docs.google.com/spreadsheets/d/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/edit?usp=sharing
+    // see http://coderwall.com/p/duapqq for tutorial on using Google Spreadsheet as JSON
+    // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
     // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
 
     // $.getJSON("https://spreadsheets.google.com/feeds/list/16GV2RRNe1GKXskyXrIlV4A4lHGQXY9x0_n_iHPnudf0/o1c0n6j/public/values?alt=json", function(datoo) {
 
-// francesca's
+    // francesca's
     // $.getJSON("https://spreadsheets.google.com/feeds/list/13rLQwhFZMFkNt3PcmMg3E-1lANxRaaR74lBUmer22dU/od6/public/values?alt=json", function(datoo) {
 
-//mine ABB january 4
-// https://docs.google.com/spreadsheets/d/e/2PACX-1vRoIf5Kn2wYacBZkoQNsg2zi1ZTJ49_MVz6KmcHhCWORkN-gR-oFMjA0o9wy-WwI_se41vloWCK2yEJ/pubhtml
-//susu spreadsheet:
-//    $.getJSON("https://spreadsheets.google.com/feeds/list/1be64SqJAqvFSyx9Trh5QwMSP7MHXqPD_zXfvxZ8bzJs/od6/public/values?alt=json", function(datoo) {
-//troppenmuseum workshop speadsheet:
+    //mine ABB january 4
+    // https://docs.google.com/spreadsheets/d/e/2PACX-1vRoIf5Kn2wYacBZkoQNsg2zi1ZTJ49_MVz6KmcHhCWORkN-gR-oFMjA0o9wy-WwI_se41vloWCK2yEJ/pubhtml
+    //susu spreadsheet:
+    //    $.getJSON("https://spreadsheets.google.com/feeds/list/1be64SqJAqvFSyx9Trh5QwMSP7MHXqPD_zXfvxZ8bzJs/od6/public/values?alt=json", function(datoo) {
+    //troppenmuseum workshop speadsheet:
     $.getJSON("https://spreadsheets.google.com/feeds/list/1EmyZhItPL5UDghf5ECEuiCyheaY6O5sttYLuUSGXbYM/od6/public/values?alt=json", function(datoo) {
         var entry = datoo.feed.entry;
-        console.log(entry);
-        for (i=0; i<entry.length; i++){
+        // console.log(entry);
+        for (i = 0; i < entry.length; i++) {
             dataG.push({
                 "year": entry[i]['gsx$date']['$t'],
                 "keywords": entry[i]['gsx$keywords']['$t'],
                 "why": entry[i]['gsx$why']['$t'],
-                "img":entry[i]['gsx$image']['$t'],
-                "url":entry[i]['gsx$link']['$t'],
-                "title":entry[i]['gsx$title']['$t'],
+                "img": entry[i]['gsx$image']['$t'],
+                "url": entry[i]['gsx$link']['$t'],
+                "title": entry[i]['gsx$title']['$t'],
             })
         }
-        console.log(dataG);
-        console.log(filterNum);
-                loadData(dataG, filterNum);
+        // console.log(dataG);
+        // console.log(filterNum);
+        loadData(dataG, filterNum);
 
     }); // end get
 
@@ -278,66 +269,62 @@ $(document).ready(function() {
 
 
 /*** Setting up Zoom Ability  ***/
-svg.call(d3.behavior.zoom()
-   .scale(1.0)
-   .scaleExtent([initialZoom, maxZoom])
-   .on("zoom", function(){
-        var t = d3.event.translate;
-        var s = d3.event.scale;
-        zoomInOut(t, s);
-    })
-);
+// svg.call(d3.behavior.zoom()
+//     .scale(1.0)
+//     .scaleExtent([initialZoom, maxZoom])
+//     .on("zoom", function() {
+//         var t = d3.event.translate;
+//         var s = d3.event.scale;
+//         zoomInOut(t, s);
+//     })
+// );
 
-//don't let people zoom in all of these ways - will mess up clicks etcs
-svg.on("mousedown.zoom", null)
-    .on("touchstart.zoom", null)
-    .on("touchmove.zoom", null)
-    .on("dblclick.zoom", null)
-    .on("touchend.zoom", null);
+// // don't let people zoom in all of these ways - will mess up clicks etcs
+// svg.on("mousedown.zoom", null)
+//     .on("touchstart.zoom", null)
+//     .on("touchmove.zoom", null)
+//     .on("dblclick.zoom", null)
+//     .on("touchend.zoom", null);
 
-d3.select("#reset").on("click", resetZoom);
+// d3.select("#reset").on("click", resetZoom);
 
 
 
 /***********
   FUNCTIONS
 ************/
+function loadData(dataName, filterNum) {
+        // console.log(dataName)
+        citeNums.length = 0; // number of times cited
+        keywords.length = 0; // number of unique keywords
+        authors.length = 0; // number of author names
+
+        theseKeywords.length = 0;
+        // theseAuthors.length = 0;
+
+        // journalTypes.length = 0;
+
+        totalAuthors.length = 0;
+        totalKeywords.length = 0;
+
+        focusKeywords.length = 0;
 
 
-/***loadData()***/
+        //load and organize data
+        //old way
+        // d3.csv(csvName, function(data) {
+        thisData = (dataName);
+        //old way
 
-function loadData(dataName, filterNum){
-console.log(dataName)
-    citeNums.length = 0;  // number of times cited
-    keywords.length = 0;  // number of unique keywords
-    authors.length = 0;   // number of author names
-
-    theseKeywords.length = 0;
-    theseAuthors.length = 0;
-
-    // journalTypes.length = 0;
-
-    totalAuthors.length = 0;
-    totalKeywords.length = 0;
-
-    focusKeywords.length = 0;
-
-
-    //load and organize data
-    //old way
-    // d3.csv(csvName, function(data) {
-        thisData=(dataName);
-    //old way
-
-    data = dataName;
-        for (i = 0;i<data.length; i++){
+        data = dataName;
+        for (i = 0; i < data.length; i++) {
 
             // if year data exists
-            if(isNaN(data[i].year)==false){
+            if (isNaN(data[i].year) == false) {
                 years[i] = parseInt(data[i].year);
             }
             //if keywords exist add to array
-            if (data[i].keywords!="undefined"){
+            if (data[i].keywords != "undefined") {
                 keywords[i] = data[i].keywords.split(", ");
             }
 
@@ -347,7 +334,7 @@ console.log(dataName)
             // }
 
             // 1 array with all the keywords
-            for (j=0; j<keywords[i].length; j++){
+            for (j = 0; j < keywords[i].length; j++) {
                 theseKeywords.push(keywords[i][j]);
             }
 
@@ -356,210 +343,200 @@ console.log(dataName)
             //     theseAuthors.push(authors[i][j]);
             // }
 
-
-
             // 1 array with corresponding Medium/ Journal Types
             // if(data[i].medium!="undefined"&&data[i].medium.length!=0){
             //     journalTypes[i] = data[i].medium.toLowerCase();
             //    }
-    };
+        };
+        // remove empty keywords and authors entries
 
+        keywordSorted = false;
+        // authorsSorted = false;
 
-    // remove empty keywords and authors entries
-
-    keywordSorted = false;
-    authorsSorted = false;
-
-    console.log(keywordSorted)
-    for (i=0; i<theseKeywords.length; i++){
-        if(theseKeywords[i].length==0){
-          theseKeywords.splice(i,1)
-          i--;
-        }
         console.log(keywordSorted)
-        keywordSorted = true;
-    }
-
-
-    for (i=0; i<theseAuthors.length; i++){
-        if(theseAuthors[i].length==0){
-          theseAuthors.splice(i,1)
-           i--;
-        }
-         authorsSorted = true;
-    }
-
-
-    // uniqueTypes = journalTypes.filter( onlyUnique ); //finds unique names onlyUnique is a function defined later
-    // uniqueTypes = uniqueTypes.sort();
-    // keyTypes = uniqueTypes;
-
-    //
-    // color = d3.scale.ordinal()
-    //     .domain([0, uniqueTypes.length])
-    //     .range(colorSpectrum);
-
-
-    uniqueKeywords = theseKeywords.filter( onlyUnique ); //finds unique keywords
-    uniqueAuthors = theseAuthors.filter( onlyUnique ); //finds unique keywords
-
-console.log(filterNum)
-    //creates a new array with the sums of all the different Keywords and also creates list of focus Keywords
-    if(keywordSorted==true){
-      console.log("keywordSorted")
-        for (i = 0; i<theseKeywords.length; i++){
-            totalKeywords[i]= keyConsolidation(theseKeywords[i])
-            mostKeyed = d3.max(totalKeywords);
-            if(totalKeywords[i]>mostKeyed*filterNum){
-                focusKeywords.push(theseKeywords[i]);
-            } else{console.log("nope")}
-        }
-    }
-
-    uniqueMostKeyed = focusKeywords.filter( onlyUnique ); //finds unique keywords from focused
-    // keyTypes = keyTypes.sort(); // alphabetical order
-
-
-   /***FOR KEY ***/
-   //  var journoCircle = vis.selectAll("journoCirc")
-   //      .data(keyTypes)
-   //      .enter()
-   //      .append("circle")
-   //      .attr("class","journoCirc")
-   //      .attr("cy", function(d,i){
-   //          return i*18+407;
-   //      })
-   //      .attr("cx", 20)
-   //      .attr("fill", function(d){
-   //          return color(d)
-   //      })
-   //      .attr("r",radius)
-
-   // var journoLabel = vis.selectAll("keylabel")
-   //      .data(keyTypes)
-   //      .enter()
-   //      .append("text").attr("class","newlabel")
-   //      .attr("y", function(d,i){
-   //          return i*18+411;
-   //      })
-   //      .attr("x", 34)
-   //      .text(function(d){ return toTitleCase(d); });
-
-        createNodes();
-
-
-   /** Functions **/
-
-    //some magic function to return uniquevalues
-    function onlyUnique(value, index, self) {
-        return self.indexOf(value) === index;
-    }
-
-    //return number of times a keyword was used
-    function keyConsolidation(givenKey,i) {
-        var total = 0;
-        for (i = 0;i<theseKeywords.length; i++){
-            if(theseKeywords[i] == givenKey){
-                total++;
+        for (i = 0; i < theseKeywords.length; i++) {
+            if (theseKeywords[i].length == 0) {
+                theseKeywords.splice(i, 1)
+                i--;
             }
+            console.log(keywordSorted)
+            keywordSorted = true;
         }
-         return total;
-    }
-
-    //return number of times an author name was cited
-    function authorConsolidation(givenAuthor,i) {
-        var total = 0;
-        for (i = 0;i<theseAuthors.length; i++){
-            if(theseAuthors[i] == givenAuthor){
-                total++;
-            }
-        }
-         return total;
-     }
-
-    //return number of times an year was cited
-    function valueConsolidation(givenYear, i) {
-        var total = 0;
-        for (i = 0;i<data.length; i++){
-            if(data[i].year!="undefined" && data[i].year== givenYear){
-                total++;
-            }
-        }
-         return total;
-     }
-
-    //return title of the journal entry
-    function toTitleCase(str){
-        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-    }
 
 
-    // }) //end of d3.csv...
+        // for (i = 0; i < theseAuthors.length; i++) {
+        //     if (theseAuthors[i].length == 0) {
+        //         theseAuthors.splice(i, 1)
+        //         i--;
+        //     }
+        //     authorsSorted = true;
+        // }
+        // uniqueTypes = journalTypes.filter( onlyUnique ); //finds unique names onlyUnique is a function defined later
+        // uniqueTypes = uniqueTypes.sort();
+        // keyTypes = uniqueTypes;
 
-} //end of function loadData()
+        // color = d3.scale.ordinal()
+        //     .domain([0, uniqueTypes.length])
+        //     .range(colorSpectrum);
+        uniqueKeywords = theseKeywords.filter(onlyUnique); //finds unique keywords
+        // uniqueAuthors = theseAuthors.filter(onlyUnique); //finds unique keywords
 
-
-
-function createNodes(){
-    links = [];
-    if(itsDone==false){
-
-        for (i=0; i<thisData.length; i++){
-            for (j=0; j<uniqueMostKeyed.length; j++){
-                if(isNaN(uniqueMostKeyed[j])){
-                    if (keywords[i].indexOf(uniqueMostKeyed[j])!=-1){
-                        links.push({"source":thisData[i].img,"target":uniqueMostKeyed[j],"key": keywords[i], "year": thisData[i].year, "img":thisData[i].img, "url":thisData[i].url, "why":thisData[i].why})
-
-
-
-
-
-
-                        // links.push({"source":keywords[i],"target":keywords[i],"img":thisData[i].img, "url":thisData[i].url})
-                        // links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceVal":thisData[i].sourceVal.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
-
-                    }
+        console.log(filterNum)
+            //creates a new array with the sums of all the different Keywords and also creates list of focus Keywords
+        if (keywordSorted == true) {
+            console.log("keywordSorted")
+            for (i = 0; i < theseKeywords.length; i++) {
+                totalKeywords[i] = keyConsolidation(theseKeywords[i])
+                mostKeyed = d3.max(totalKeywords);
+                if (totalKeywords[i] > mostKeyed * filterNum) {
+                    focusKeywords.push(theseKeywords[i]);
+                } else {
+                    console.log("nope")
                 }
             }
         }
 
+        uniqueMostKeyed = focusKeywords.filter(onlyUnique); //finds unique keywords from focused
+        // keyTypes = keyTypes.sort(); // alphabetical order
+
+        /***FOR KEY ***/
+        //  var journoCircle = vis.selectAll("journoCirc")
+        //      .data(keyTypes)
+        //      .enter()
+        //      .append("circle")
+        //      .attr("class","journoCirc")
+        //      .attr("cy", function(d,i){
+        //          return i*18+407;
+        //      })
+        //      .attr("cx", 20)
+        //      .attr("fill", function(d){
+        //          return color(d)
+        //      })
+        //      .attr("r",radius)
+        // var journoLabel = vis.selectAll("keylabel")
+        //      .data(keyTypes)
+        //      .enter()
+        //      .append("text").attr("class","newlabel")
+        //      .attr("y", function(d,i){
+        //          return i*18+411;
+        //      })
+        //      .attr("x", 34)
+        //      .text(function(d){ return toTitleCase(d); });
+
+        createNodes();
+        /** Functions **/
+
+        //some magic function to return uniquevalues
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+        //return number of times a keyword was used
+        function keyConsolidation(givenKey, i) {
+            var total = 0;
+            for (i = 0; i < theseKeywords.length; i++) {
+                if (theseKeywords[i] == givenKey) {
+                    total++;
+                }
+            }
+            return total;
+        }
+
+        //return number of times an author name was cited
+        // function authorConsolidation(givenAuthor, i) {
+        //     var total = 0;
+        //     for (i = 0; i < theseAuthors.length; i++) {
+        //         if (theseAuthors[i] == givenAuthor) {
+        //             total++;
+        //         }
+        //     }
+        //     return total;
+        // }
+
+        //return number of times an year was cited
+        function valueConsolidation(givenYear, i) {
+            var total = 0;
+            for (i = 0; i < data.length; i++) {
+                if (data[i].year != "undefined" && data[i].year == givenYear) {
+                    total++;
+                }
+            }
+            return total;
+        }
+
+        //return title of the journal entry
+        function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        }
+        // }) //end of d3.csv...
+    } //end of function loadData()
+
+function createNodes() {
+    links = [];
+    if (itsDone == false) {
+        for (i = 0; i < thisData.length; i++) {
+            for (j = 0; j < uniqueMostKeyed.length; j++) {
+                if (isNaN(uniqueMostKeyed[j])) {
+                    if (keywords[i].indexOf(uniqueMostKeyed[j]) != -1) {
+                        links.push({
+                            "source": thisData[i].img,
+                            "target": uniqueMostKeyed[j],
+                            "key": keywords[i],
+                            "year": thisData[i].year,
+                            "img": thisData[i].img,
+                            "url": thisData[i].url,
+                            "why": thisData[i].why
+                        })
+                        // links.push({"source":keywords[i],"target":keywords[i],"img":thisData[i].img, "url":thisData[i].url})
+                        // links.push({"source":keywords[i],"target":uniqueMostKeyed[j],"typeResearch": thisData[i].typeResearch, "sourceVal":thisData[i].sourceVal.toLowerCase(), "headline":thisData[i].title, "authors":thisData[i].author, "url":thisData[i].link})
+                    }
+                }
+            }
+        }
         simpleNodes();
     }
-
 }
 
 var callback1;
 var valColor = d3.scale.ordinal()
-  .domain(["low","mid","high"])
-  .range(["#66ccff","#009933","#ff5050"])
+    .domain(["low", "mid", "high"])
+    .range(["#66ccff", "#009933", "#ff5050"])
 var greyColor = "#808080";
 var majorNodes = [];
-function simpleNodes(){
 
+function simpleNodes() {
     var thisMap;
     var thisWeight = [];
     var maxWeight;
-
-
     // Compute the distinct nodes from the links.
-// var mapYear = d3.scale.linear()
-//                 .domain([1970, 2017])
-//                 .range([0, links.length])
+    // var mapYear = d3.scale.linear()
+    //                 .domain([1970, 2017])
+    //                 .range([0, links.length])
     links.sort(function(a, b) {
-      return d3.ascending(a.year, b.year);
-    })
-// var majorNodes = [];
-var angle2, x2, y2;
-    links.forEach(function(link,i) {
+            return d3.ascending(a.year, b.year);
+        })
+        // var majorNodes = [];
+    var angle2, x2, y2;
+    links.forEach(function(link, i) {
         // console.log(mapYear(link.year));
-          angle = (i / ((links.length)/2)) * Math.PI; // Calculate the angle at which the element will be placed.
-                                                // For a semicircle, we would use (i / numNodes) * Math.PI.
-          x = (radius * Math.cos(angle)) + (w/2); // Calculate the x position of the element.
-          y = (radius * Math.sin(angle)) + (h/2); // Calculate the y position of the element.
+        angle = (i / ((links.length) / 2)) * Math.PI; // Calculate the angle at which the element will be placed.
+        // For a semicircle, we would use (i / numNodes) * Math.PI.
+        x = (radius * Math.cos(angle)) + (w / 2); // Calculate the x position of the element.
+        y = (radius * Math.sin(angle)) + (h / 2); // Calculate the y position of the element.
 
-      link.source = nodes[link.source] || (nodes[link.source] = {name: link.key, img:link.img, xIs: x, yIs: y});
+        link.source = nodes[link.source] || (nodes[link.source] = {
+            name: link.key,
+            img: link.img,
+            xIs: x,
+            yIs: y
+        });
 
-      link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, xIs: x, yIs: y});
+        link.target = nodes[link.target] || (nodes[link.target] = {
+            name: link.target,
+            xIs: x,
+            yIs: y
+        });
 
     });
 
@@ -576,97 +553,112 @@ var angle2, x2, y2;
         .on("dragstart", dragstart);
 
 
-  images = vis.selectAll("node")
-        .data(force.nodes())
+var nodeImg = [];
+var nodeData = force.nodes();
+for(i=0; i<nodeData.length; i++){
+    howLong.push(nodeData[i].name);
+    if(nodeData[i].img!=undefined){
+        nodeImg.push(nodeData[i]);
+    }else{
+    }
+}
+    images = vis.selectAll("node")
+        .data(nodeImg)
         .enter().append("svg:image")
-        .attr("xlink:href",  function(d) { 
+        .attr("xlink:href", function(d) {
             return d.img;
         })
-        .attr("x", function(d) { 
-            howLong.push(d.name);
+        .attr("x", function(d) {
             return -25;
         })
-        .attr("y", function(d) { return -25;})
-        .attr("height", h/3)
-        .attr("width", h/3)
-        .attr("transform", function(d,i){
-          return "translate(" + w + "," + h/4 + ")";
+        .attr("y", function(d) {
+            return -25;
+        })
+        .attr("height", h / 3)
+        .attr("width", h / 3)
+        .attr("transform", function(d, i) {
+            return "translate(" + -w + "," + h / 4 + ")";
         });
-        
-        var move = setInterval(function(){
-            console.log(indexing)
-            images
-                .transition()
-                .attr("transform", function(d,i){
-                    if(d.img==undefined){
-                    }else{
-                        if (indexing==i){
-                            var moveIt = d3.select(this);
-                            return transformAcross1(moveIt);
-                        }else{
-                            return "translate(" + w + "," + 0 + ")";
+
+    var move = setInterval(function() {
+        var moveIt = d3.select(images[0][indexing]);
+
+        moveIt
+            .transition()
+            .duration(1000)
+            .attr("transform", transformAcross1(moveIt))
+            .attr("class","looked")
+            .each("end", function(d){
+                d3.select(this)
+                    .transition()
+                    .duration(2000)
+                    .attr("transform", function(d){
+                        if(d.name.includes("movement")){
+                        console.log(d.name)
+                            return transformAcross2(moveIt)
+                        } else{
+                            return transformAcross3(moveIt)
                         }
-                    }
-                });
-            indexing++;
-            if (indexing == force.nodes().length){
-                clearInterval(move);            
-            }
-        }, 1000)
+                    })
+            })
 
 
-                // function takeCirclesOut(){
-                //     index = 0;
-                //     svg.selectAll("circle").remove();
-                // }
+
+
+        // images
+        //     .transition()
+        //     .duration(2000)
+        //     .attr("transform", function(d, i) {
+        //         if (indexing == i) { //bring it out and look at it
+        //             moveIt = d3.select(this).attr("class","looked");
+        //             return transformAcross1(moveIt);
+        //         } 
+        //         else {
+        //             return "translate(" + w + "," + h/4 + ")";
+        //         }
+        //     })
+        //     .transition()
+        //     .attr("transform", function(d, i) {
+        //         if(d3.select(this).classed("looked")&&d.name.includes("movement")){ 
+        //             return transformAcross2(d3.select(this));
+        //         }
+        //         else{
+        //             return "translate(" + -w + "," + h/4 + ")";
+        //         }
+        //     })                   
+        indexing++;
+        if (indexing > nodeImg.length) {
+            clearInterval(move);
+        }
+    }, 1000)
+
+
+    // function takeCirclesOut(){
+    //     index = 0;
+    //     svg.selectAll("circle").remove();
+    // }
     function transformAcross1(d) {
-        console.log(d);
-      d.x = w/2-h/6;
-      d.y = h/4;
-      return "translate(" + d.x+ "," + d.y + ")";
+        d.x = w / 2 - h / 6;
+        d.y = h / 4;
+        return "translate(" + d.x + "," + d.y + ")";
     }
     function transformAcross2(d, i) {
-      d.x = -h/3;
-      d.y = h/4;
-      return "translate(" + d.x+ "," + d.y + ")";
+        d.x = w / 2 - h / 6;
+        d.y = h - h/6;
+        return "translate(" + d.x + "," + d.y + ")";
     }
-
-
-    // callback1 = function(){
-    //     images
-    //         .transition()
-    //         .duration(2000)
-    //         .delay(function(d, i) { return 500; })
-    //         .attr("transform", transformAcross1)
-    //         .each("end", function(d){
-    //             d3.select(this)
-    //                 .transition()
-    //                 .duration(2000)
-    //                 .delay(function(d, i) { return 500; })
-    //                 .attr("transform", transformAcross2)
-    //                 // .each("end", callback1)        
-    //         })
-    // }
-
-    function doNothing(){
-
+    function transformAcross3(d, i) {
+        d.x = w*2;
+        d.y = h/4;
+        return "translate(" + d.x + "," + d.y + ")";
     }
-
-
-
-
-
-
-
-
-
-
-
+    function doNothing() {
+    }
 
     path = vis.selectAll("path")
         .data(force.links())
         .enter().append("path")
-        .attr("class","link")
+        .attr("class", "link")
         .attr("stroke", "grey")
 
     function dblclick(d) {
@@ -676,22 +668,21 @@ var angle2, x2, y2;
         d3.select(this).classed("fixed", d.fixed = true);
     }
 
-
-    text= vis.selectAll("labels")
+    text = vis.selectAll("labels")
         .data(force.nodes())
         .enter().append("text")
-        .attr("class","labels")
+        .attr("class", "labels")
         .attr("x", 0)
         .attr("y", ".31em")
         // .attr("y", "-1em")
         .attr("text-anchor", "start")
-        .text(function(d,i) {
-            if(howLong.length>1){ //only major keywords
+        .text(function(d, i) {
+            if (howLong.length > 1) { //only major keywords
                 // console.log(d);
-                if(i>0){
-                    if(howLong[i][0].length==1){
+                if (i > 0) {
+                    if (howLong[i][0].length == 1) {
                         majorNodes.push(d);
-                         return d.name;
+                        return d.name;
                     }
                 }
             }
@@ -700,23 +691,24 @@ var angle2, x2, y2;
     // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
         // path.attr("d", linkArcNorm);
-      // circle
-      //     .attr("transform", transform);
-          // text.attr("transform", transformSmall);
-          // images.attr("transform", transformCircular);
+        // circle
+        //     .attr("transform", transform);
+        // text.attr("transform", transformSmall);
+        // images.attr("transform", transformCircular);
 
 
-          // images.attr("transform", transformAcross);
+        // images.attr("transform", transformAcross);
     }
 
     function transformCircular(d) {
-      return "translate(" + d.xIs + "," + d.yIs + ")";
+        return "translate(" + d.xIs + "," + d.yIs + ")";
     }
     var rad = 4;
+
     function transformNorm(d) {
-      d.x = Math.max(rad, Math.min(w - rad, d.x));
-      d.y = Math.max(rad, Math.min(h - rad, d.y));
-      return "translate(" + d.x+ "," + d.y + ")";
+        d.x = Math.max(rad, Math.min(w - rad, d.x));
+        d.y = Math.max(rad, Math.min(h - rad, d.y));
+        return "translate(" + d.x + "," + d.y + ")";
     }
 
 
@@ -739,30 +731,32 @@ var angle2, x2, y2;
     //         // }
     //     }
     // });
-    $('#clickZoom').fadeIn();
+    // $('#clickZoom').fadeIn();
 
     var c = false;
     $('#citeRate').slideDown();
     d3.select("#citeRate").classed("selected", true);
 }
 
-    var radi = 50;
-    var all = [];
-    function transformUp(d) {
+var radi = 50;
+var all = [];
 
-      // d.x = w/2;
-      // Math.max(radius, Math.min(w - radius, d.x));
-      d.y = 1;
-      return "translate(" + d.x + "," + d.y + ")";
-    }
-    function transformDown(d) {
-        // return ""
-      // d.x = w/2;
-      d.y = h/2;
-      return "translate(" + d.x+ "," + d.y + ")";
-    }
+function transformUp(d) {
 
-function stopBigNet(){
+    // d.x = w/2;
+    // Math.max(radius, Math.min(w - radius, d.x));
+    d.y = 1;
+    return "translate(" + d.x + "," + d.y + ")";
+}
+
+function transformDown(d) {
+    // return ""
+    // d.x = w/2;
+    d.y = h / 2;
+    return "translate(" + d.x + "," + d.y + ")";
+}
+
+function stopBigNet() {
     force.stop()
     circle
         .transition()
@@ -773,9 +767,9 @@ function stopBigNet(){
         .duration(2000)
         .attr("d", linkArc);
 
-    function newTransform(d,i){
-            d.y = h; //not links[i].cites
-            return "translate(" + d.x+ "," + d.y + ")";
+    function newTransform(d, i) {
+        d.y = h; //not links[i].cites
+        return "translate(" + d.x + "," + d.y + ")";
     }
 }
 
@@ -783,79 +777,87 @@ function stopBigNet(){
 
 var xScale = d3.scale.linear()
     .domain([0, w])
-    .range([w/3, (w*2/3)])
+    .range([w / 3, (w * 2 / 3)])
 var yScale = d3.scale.linear()
     .domain([0, h])
-    .range([h/3, (h*2/3)])
+    .range([h / 3, (h * 2 / 3)])
+
 function transformSmall(d) {
-  return "translate(" + xScale(d.xIs) + "," + yScale(d.yIs) + ")";
+    return "translate(" + xScale(d.xIs) + "," + yScale(d.yIs) + ")";
 }
+
 function linkArcNorm(d) {
-  var dx = xScale(d.target.xIs) - d.source.xIs,
-      dy = yScale(d.target.yIs) - d.source.yIs,
-      dr = Math.sqrt(dx * dx + dy * dy);
-  return "M" + d.source.xIs + "," + d.source.yIs + "A" + dr + "," + dr + " 0 0,1 " + xScale(d.target.xIs) + "," + yScale(d.target.yIs);
+    var dx = xScale(d.target.xIs) - d.source.xIs,
+        dy = yScale(d.target.yIs) - d.source.yIs,
+        dr = Math.sqrt(dx * dx + dy * dy);
+    return "M" + d.source.xIs + "," + d.source.yIs + "A" + dr + "," + dr + " 0 0,1 " + xScale(d.target.xIs) + "," + yScale(d.target.yIs);
 }
+
 function linkArc(d) {
-  var dx = d.target.xIs - d.source.xIs,
-      dy = d.target.yIs - d.source.yIs,
-      dr = Math.sqrt(dx * dx + dy * dy);
-  return "M" + d.source.xIs + "," + d.source.yIs + "A" + dr + "," + dr + " 0 0,1 " + d.target.xIs + "," + d.target.yIs;
+    var dx = d.target.xIs - d.source.xIs,
+        dy = d.target.yIs - d.source.yIs,
+        dr = Math.sqrt(dx * dx + dy * dy);
+    return "M" + d.source.xIs + "," + d.source.yIs + "A" + dr + "," + dr + " 0 0,1 " + d.target.xIs + "," + d.target.yIs;
 }
-function transCirc(d){
-    var nodes = [],
-        width = (radius * 2) + 100,
-         height = (radius * 2) + 100,
-         angle,
-         x,
-         y,
-         i;
-     for (i=0; i<links.length; i++) {
-      angle = (i / ((links.length)/2)) * Math.PI; // Calculate the angle at which the element will be placed.
-                                            // For a semicircle, we would use (i / numNodes) * Math.PI.
-      d.x = (radius * Math.cos(angle)) + (width/2); // Calculate the x position of the element.
-      d.y = (radius * Math.sin(angle)) + (width/2); // Calculate the y position of the element.
-      nodes.push({'id': i, 'x': x, 'y': y, 'audio':''});
-     }
-       return "translate(" + d.x+ "," + d.y + ")";
 
-}
-//old version
-// function transform(d) {
-//   d.x = Math.max(radius, Math.min(w - radius, d.x));
-//   d.y = Math.max(radius, Math.min(h - radius, d.y));
-//   return "translate(" + d.x+ "," + d.y + ")";
-// }
+function transCirc(d) {
+        var nodes = [],
+            width = (radius * 2) + 100,
+            height = (radius * 2) + 100,
+            angle,
+            x,
+            y,
+            i;
+        for (i = 0; i < links.length; i++) {
+            angle = (i / ((links.length) / 2)) * Math.PI; // Calculate the angle at which the element will be placed.
+            // For a semicircle, we would use (i / numNodes) * Math.PI.
+            d.x = (radius * Math.cos(angle)) + (width / 2); // Calculate the x position of the element.
+            d.y = (radius * Math.sin(angle)) + (width / 2); // Calculate the y position of the element.
+            nodes.push({
+                'id': i,
+                'x': x,
+                'y': y,
+                'audio': ''
+            });
+        }
+        return "translate(" + d.x + "," + d.y + ")";
 
-var zoomInOut = function(t, s) {
-    if (showReset==true){
-        $('#reset').slideDown("slow");
     }
-    if (showReset==false){
-        $('#reset').slideUp("slow");
-    }
-    if (s>=initialZoom){
-        showReset = true;
-    }
-    if (s<initialZoom){
-        showReset = false;
-    }
-    vis.attr("transform",
-      "translate("+d3.event.translate+ ")"
-      + " scale(" + d3.event.scale + ")");
-};
+    //old version
+    // function transform(d) {
+    //   d.x = Math.max(radius, Math.min(w - radius, d.x));
+    //   d.y = Math.max(radius, Math.min(h - radius, d.y));
+    //   return "translate(" + d.x+ "," + d.y + ")";
+    // }
 
-function chosen(keyIs){
+// var zoomInOut = function(t, s) {
+//     if (showReset == true) {
+//         $('#reset').slideDown("slow");
+//     }
+//     if (showReset == false) {
+//         $('#reset').slideUp("slow");
+//     }
+//     if (s >= initialZoom) {
+//         showReset = true;
+//     }
+//     if (s < initialZoom) {
+//         showReset = false;
+//     }
+//     vis.attr("transform",
+//         "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+// };
+
+function chosen(keyIs) {
     var keyIs = keyIs;
     force.stop();
     images
         .transition()
-        .attr("transform", function(d){
-            if(d.name.length>1){
-                for(var j=0; j<d.name.length; j++){
-                    if(d.name[j]==keyIs){
-                       return transformDown(d);
-                    } else{
+        .attr("transform", function(d) {
+            if (d.name.length > 1) {
+                for (var j = 0; j < d.name.length; j++) {
+                    if (d.name[j] == keyIs) {
+                        return transformDown(d);
+                    } else {
                         return transformUp(d);
                     }
                 }
@@ -863,12 +865,12 @@ function chosen(keyIs){
         })
     text
         .transition()
-        .attr("transform", function(d){
-            if(d.name.length>1){
-                for(var j=0; j<d.name.length; j++){
-                    if(d.name[j]==keyIs){
-                       return transformDown(d);
-                    } else{
+        .attr("transform", function(d) {
+            if (d.name.length > 1) {
+                for (var j = 0; j < d.name.length; j++) {
+                    if (d.name[j] == keyIs) {
+                        return transformDown(d);
+                    } else {
                         return transformUp(d);
                     }
                 }
@@ -879,16 +881,14 @@ function chosen(keyIs){
         .attr("d", linkArc)
 }
 
-function resetZoom(){
-    console.log("reset viz")
-    vis.attr("transform",
-      "translate("+ 0 + "," + 0 + ")"
-      + " scale(" + initialZoom + ")");
+// function resetZoom() {
+//     console.log("reset viz")
+//     vis.attr("transform",
+//         "translate(" + 0 + "," + 0 + ")" + " scale(" + initialZoom + ")");
 
-    showReset = false;
-    $('#reset').slideUp("slow");
-};
-
+//     showReset = false;
+//     $('#reset').slideUp("slow");
+// };
 
 
 
