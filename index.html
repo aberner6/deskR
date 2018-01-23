@@ -17,10 +17,9 @@
 <body>
     <div id = "form" action="">
         <h2> How should the A.I. search for European heritage?</h2>
-        <textarea rows="5" cols="20">
-        </textarea>
+            <textarea rows="5" cols="20">
+            </textarea>
         <button onclick="myFunction()">Submit</button>
-<p id="demo"></p>
     </div>
 
     <center>
@@ -49,21 +48,47 @@
     <div id="container">
     </div>
     <script>
-        var inputValue;
-        function myFunction() {
-            inputValue = this.value;
-            console.log(inputValue);
-        }
+function loadScript(url, callback){
 
+    var script = document.createElement("script")
+    script.type = "text/javascript";
+
+    if (script.readyState){  //IE
+        script.onreadystatechange = function(){
+            if (script.readyState == "loaded" ||
+                    script.readyState == "complete"){
+                script.onreadystatechange = null;
+                callback();
+            }
+        };
+    } else {  //Others
+        script.onload = function(){
+            callback();
+        };
+    }
+
+    script.src = url;
+    document.getElementsByTagName("head")[0].appendChild(script);
+}
         var w = window.outerWidth;
         var h = window.innerHeight - 100;
         var svg = d3.select("#container")
             .append("svg")
             .attr("width", w)
             .attr("height", h)
-    </script>
-    <script type="text/javascript" src="tropNet.js"></script>
 
+        var inputValue;
+        var inputElems;
+        function myFunction() {
+            inputElems = d3.selectAll("textarea");
+            console.log(inputElems)
+            inputValue = inputElems[0][0].value;
+            console.log(inputValue);
+            loadScript("tropNet.js", function(){
+                //initialization code
+            });
+        }
+    </script>
     <!-- <script type="text/javascript" src="net.js"></script> -->
     <!-- <script src="./files/main.js"></script> -->
 </body>
