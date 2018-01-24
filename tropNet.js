@@ -1,4 +1,5 @@
 
+inputValue = ["history","heritage","blah","ideas"]
 console.log(inputValue)
 
 /*** Variables ***/
@@ -363,6 +364,7 @@ var valColor = d3.scale.ordinal()
     .range(["#66ccff", "#009933", "#ff5050"])
 var greyColor = "#808080";
 var majorNodes = [];
+var nodeImg = [];
 
 function simpleNodes() {
     var thisMap;
@@ -406,7 +408,6 @@ function simpleNodes() {
         .on("dragstart", dragstart);
 
 
-var nodeImg = [];
 var nodeData = force.nodes();
 for(i=0; i<nodeData.length; i++){
     howLong.push(nodeData[i].name);
@@ -447,73 +448,7 @@ for(i=0; i<nodeData.length; i++){
         });
     $(".labels").show();
 
-    // function go(){
-    var move = setInterval(function() {
-        var moveIt = d3.select(images[0][indexing]);
-        var moveTxt = d3.select(text[0][indexing]);
-
-        moveIt
-            .transition()
-            .duration(1000)
-            .attr("transform", transformAcross1(moveIt))
-            .attr("class","looked")
-            .each("end", function(d){
-                d3.select(this)
-                    .transition()
-                    .duration(2000)
-                    .attr("transform", function(d){
-                        if(d.name.includes(inputValue)){
-                        console.log(d.name)
-                            return transformAcross2(moveIt)
-                        } else{
-                            return transformAcross3(moveIt)
-                        }
-                    })
-            })                  
-        moveTxt
-            .transition()
-            .duration(1000)
-            .attr("transform", transformAcross1(moveTxt))
-            .attr("class","looked")
-            .each("end", function(d){
-                d3.select(this)
-                    .transition()
-                    .duration(2000)
-                    .attr("transform", function(d){
-                        if(d.name.includes("migration")){
-                        console.log(d.name)
-                            return transformAcross2(moveTxt)
-                        } else{
-                            return transformAcross3(moveTxt)
-                        }
-                    })
-            })  
-        indexing++;
-        if (indexing > nodeImg.length) {
-            clearInterval(move);
-        }
-    }, 1000)
-    // }
-
-    function transformAcross1(d) {
-        d.x = w / 2 - h / 6;
-        d.y = h / 4;
-        return "translate(" + d.x + "," + d.y + ")";
-    }
-    function transformAcross2(d, i) {
-        d.x = w / 2 - h / 6;
-        d.y = h - h/6;
-        return "translate(" + d.x + "," + d.y + ")";
-    }
-    function transformAcross3(d, i) {
-        d.x = w*2;
-        d.y = h/4;
-        return "translate(" + d.x + "," + d.y + ")";
-    }
-    function doNothing() {
-    }
-
-    // path = vis.selectAll("path")
+       // path = vis.selectAll("path")
     //     .data(force.links())
     //     .enter().append("path")
     //     .attr("class", "link")
@@ -548,6 +483,102 @@ for(i=0; i<nodeData.length; i++){
     $('#citeRate').slideDown();
     d3.select("#citeRate").classed("selected", true);
 }
+
+ // function go(){
+    var move = setInterval(function() {
+        var moveIt = d3.select(images[0][indexing]);
+        var moveTxt = d3.select(text[0][indexing]);
+var keys = [];
+
+        moveIt
+            .transition()
+            .duration(1000)
+            .attr("transform", transformAcross1(moveIt))
+            .attr("class",function(d){
+                // console.log(d.name);
+                for(j=0; j<inputValue.length; j++){
+                    console.log(j+"j");
+                    for(k=0; k<d.name.length; k++){
+                        console.log(d.name[k]+"k");
+                        if(d.name[k].equals(inputValue[j])){
+                            console.log("yes")
+                            return "keep"
+                        }else{
+                            return "discard"
+                        }
+                    }
+                }
+                // return "looked"
+            })
+            .each("end", function(d){
+                d3.select(this)
+                    .transition()
+                    .duration(2000)
+                    .attr("transform", function(d){
+                        // keys.push(d.name);
+                        // console.log(keys.length+"keyslength");
+                        // console.log(keys[0].length+"at zero");
+
+                            // for(var k=0; k<6; k++){
+                            //     console.log(k+"k")
+                        // for(var j=0; j<inputValue.length; j++){
+                                // console.log(j+"j")
+                                if(d.name.includes(inputValue[j])){
+                                    // console.log(inputValue[j]+"YAY")
+                                    return transformAcross2(moveIt)
+                                } else{
+                                    return transformAcross3(moveIt)
+                                }
+                        // }
+                    // }
+                    })
+            })                  
+        // moveTxt
+        //     .transition()
+        //     .duration(1000)
+        //     .attr("transform", transformAcross1(moveTxt))
+        //     .attr("class","looked")
+        //     .each("end", function(d){
+        //         d3.select(this)
+        //             .transition()
+        //             .duration(2000)
+        //             .attr("transform", function(d){
+        //                 for(j=0; j<inputValue.length; j++){
+        //                     if(d.name ==inputValue[j]){
+        //                         console.log(inputValue[j]+"YAY")
+        //                         return transformAcross2(moveIt)
+        //                     } else{
+        //                         return transformAcross3(moveIt)
+        //                     }
+        //                 }
+        //             })
+        //     })  
+        indexing++;
+        if (indexing > nodeImg.length){
+            clearInterval(move);
+        }
+        
+    }, 5000)
+    // }
+
+    function transformAcross1(d) {
+        d.x = w / 2 - h / 6;
+        d.y = h / 4;
+        return "translate(" + d.x + "," + d.y + ")";
+    }
+    function transformAcross2(d, i) {
+        d.x = w / 2 - h / 6;
+        d.y = h - h/6;
+        return "translate(" + d.x + "," + d.y + ")";
+    }
+    function transformAcross3(d, i) {
+        d.x = w*2;
+        d.y = h/4;
+        return "translate(" + d.x + "," + d.y + ")";
+    }
+    function doNothing() {
+    }
+
 
 var radi = 50;
 var all = [];
