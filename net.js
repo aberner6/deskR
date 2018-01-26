@@ -571,11 +571,11 @@ function simpleNodes(){
         .call(drag);
 
 
-    path = vis.selectAll("path")
-        .data(force.links())
-        .enter().append("path")
-        .attr("class","link")
-        .attr("stroke", "grey")
+    // path = vis.selectAll("path")
+    //     .data(force.links())
+    //     .enter().append("path")
+    //     .attr("class","link")
+    //     .attr("stroke", "grey")
     // circle = vis.selectAll("node")
     //     .data(force.nodes())
     //     .enter().append("circle")

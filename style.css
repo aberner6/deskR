@@ -9,8 +9,20 @@ textarea{
   left: 25%;
   position: relative;
 }
-h2{
-  font-size: 18px;
+/*text.keeping{
+  display:none;
+}
+text.discarding{
+  display:none;
+}*/
+h3{
+    width: 35%;
+    left: 33%;
+    font-size: 28px;
+    position: absolute;
+    top: 20%;
+    background-color:white;
+    opacity: .5;
 }
 .input {
   position: relative;
@@ -33,7 +45,7 @@ h2{
   background: #f0f0f0;
   color: #aaa;
   font-weight: 400;
-  font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Courier, sans-serif;
   -webkit-appearance: none; /* for box shadows to show on iOS */
 }
 
@@ -205,12 +217,13 @@ h2{
       }
       
       .labels {
-          font-size: 8px;
+          font-size: 12px;
           text-transform: lowercase;
           display: none;
       }
       .looked{
           font-size: 10px;
+          font-family: "Courier";
           text-transform: lowercase;        
       }
       .kandellabels {
@@ -253,7 +266,7 @@ h2{
           position: fixed;
           /*border-style: 1px;*/
           /*border-bottom-style: solid;*/
-          font-family: Helvetica Neue;
+          font-family: Courier;
           font-size: 12px;
           text-align: center;
           font-weight: 200;
@@ -368,7 +381,7 @@ h2{
           text-rendering: optimizeLegibility;
           -webkit-font-smoothing: antialiased;
           font-weight: 200;
-          font-family: "Helvetica Neue";
+          font-family: "Courier";
       }
       
       #container {
@@ -466,7 +479,7 @@ stroke: #999;
 html { overflow: hidden; }
 
 #heading{
-font-family: 'Eczar', serif;
+font-family: 'Courier', serif;
 
     width: 60%;
     font-size:26px;
@@ -478,7 +491,7 @@ font-family: 'Eczar', serif;
     align-items: center;*/
 }
 #subtitle{
-  font-family:'Gentium', serif;
+  font-family:'Courier', serif;
   font-weight: 100;
   /*-webkit-margin-before: 30px;*/
   font-size: 20px;

@@ -1,6 +1,6 @@
 
 console.log(inputValue)
-inputValue = ["racism","democracy","united states"]
+
 /*** Variables ***/
 //Datavis
 //number of keywords 0-1, 0 will give a lot of keywords
@@ -366,7 +366,7 @@ var valColor = d3.scale.ordinal()
 var greyColor = "#808080";
 var majorNodes = [];
 var nodeImg = [];
-var thisName = [];
+
 function simpleNodes() {
     var thisMap;
     var thisWeight = [];
@@ -434,17 +434,12 @@ for(i=0; i<nodeData.length; i++){
         .attr("transform", function(d, i) {
             return "translate(" + -w + "," + h / 4 + ")";
         });
-
     // text = vis.selectAll("labels")
     //     .data(nodeImg)
     //     .enter().append("text")
-    //     .attr("class", function(d){
-    //         console.log(d.name)
-    //         thisName.push(d.name);
-    //         return "labels"
-    //     })
+    //     .attr("class", "labels")
     //     .attr("x", -25)
-    //     .attr("y",-25)
+    //     .attr("y", -25)
     //     .attr("text-anchor", "start")
     //     .attr("transform", function(d, i) {
     //         return "translate(" + -w + "," + h / 4 + ")";
@@ -453,6 +448,12 @@ for(i=0; i<nodeData.length; i++){
     //         return d.name;
     //     });
     // $(".labels").show();
+
+       path = vis.selectAll("path")
+        .data(force.links())
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("stroke", "grey")
         
     rect = vis.append("rect").attr("class","fake")
            .attr("x",w/2-50)
@@ -509,114 +510,88 @@ var yrange = d3.scale.linear()
     .domain([0, 1])
     .range([h/4, h/3])
  // function go(){
-var text1 = vis.append("text").attr("class","keeping")
-       .attr("x",w/2-50)
-       .attr("y", h/5)
-       .attr("fill","black")
-       .attr("opacity",0)
-       .text("keep");
-var text2 = vis.append("text").attr("class","discarding")
-       .attr("x",w/2-50)
-       .attr("y", h/5)
-       .attr("fill","black")
-       .attr("opacity",0)
-       .text("discard");
-var anyMatchInArray = function (target, toMatch) {
-    "use strict";
-    
-    var found, targetMap, i, j, cur;
-    
-    found = false;
-    targetMap = {};
-    
-    // Put all values in the `target` array into a map, where
-    //  the keys are the values from the array
-    for (i = 0, j = target.length; i < j; i++) {
-        cur = target[i];
-        targetMap[cur] = true;
-    }
-    
-    // Loop over all items in the `toMatch` array and see if any of
-    //  their values are in the map from before
-    for (i = 0, j = toMatch.length; !found && (i < j); i++) {
-        cur = toMatch[i];
-        found = !!targetMap[cur];
-        // If found, `targetMap[cur]` will return true, otherwise it
-        //  will return `undefined`...that's what the `!!` is for
-    }
-    
-    return found;
-};
-var blinkText;
     var move = setInterval(function() {
         var moveIt = d3.select(images[0][indexing]);
-        
-        var aName = [];
-        aName = d3.select(nodeImg[indexing].name);
-
+        // var moveTxt = d3.select(text[0][indexing]);
+        var keys = [];
         moveIt
             .transition()
             .duration(2000)
             .attr("transform", transformAcross1(moveIt))
             .attr("class",function(d){
-                var findOne = false;
-                findOne = anyMatchInArray(aName[0][0],inputValue)
-                if(findOne){
-                    console.log("YES"+aName+"  aName"+inputValue)   
-                    return "keep";
-                }                
-                else{          
-                    return "discard";
-                }
+                // console.log(d.name);
+                // for(j=0; j<inputValue.length; j++){
+                //     console.log(j+"j");
+                //     for(k=0; k<d.name.length; k++){
+                //         console.log(d.name[k]+"k");
+                //         if(d.name[k].equals(inputValue[j])){
+                //             console.log("yes")
+                //             return "keep"
+                //         }else{
+                //             return "discard"
+                //         }
+                //     }
+                // }
+                return "looked"
             })
             .each("end", function(d){
                 d3.select(this)
                     .transition()
-                    .duration(3000)
+                    .duration(2000)
                     .attr("transform", function(d){
-                        if(d3.select(this).classed("keep")){
-    d3.select("text.keeping").attr("opacity",1)
-    d3.select("text.discarding").attr("opacity",0)   
-                            console.log("cool")
-                            return transformAcross2(moveIt);
-                        }else{
-    d3.select("text.keeping").attr("opacity",0)
-    d3.select("text.discarding").attr("opacity",1)     
-                            return transformAcross3(moveIt);
-                        }
-                        if(indexing%2==0){             
-                            rect.transition()
-                                .attr("x", xrange(Math.random()))
-                                .attr("y", yrange(Math.random()))
-                                .attr("width", Math.random()*100)
-                                .attr("height", Math.random()*100)
-                                .attr("stroke-width", Math.random()*10)
-                            return transformAcross2(moveIt)
-                        } else{
-                            return transformAcross3(moveIt)
-                        }
+                                if(indexing%3==1){
+        rect.transition()
+            // .duration(2000)
+            .attr("x", xrange(Math.random()))
+            .attr("y", yrange(Math.random()))
+            .attr("width", Math.random()*100)
+            .attr("height", Math.random()*100)
+            .attr("stroke-width", Math.random()*10)
+                                    return transformAcross2(moveIt)
+                                } else{
+                                    return transformAcross3(moveIt)
+                                }
                     })
-            })
+            })                  
+        // moveTxt
+        //     .transition()
+        //     .duration(2000)
+        //     .attr("transform", transformAcross1(moveTxt))
+        //     .attr("class","looked")
+        //     .each("end", function(d){
+        //         d3.select(this)
+        //             .transition()
+        //             .duration(2000)
+        //             .attr("transform", function(d){
+        //                 // for(j=0; j<inputValue.length; j++){
+        //                         if(d.name.includes("democracy")){
+        //                         return transformAcross2(moveIt)
+        //                     } else{
+        //                         return transformAcross3(moveIt)
+        //                     }
+        //                 // }
+        //             })
+        //     })  
+
         indexing++;
-        if (indexing >= nodeImg.length){
+        if (indexing > nodeImg.length){
             clearInterval(move);
-            clearInterval(blinkText)
         }
-    }, 4000)
-
-
+        
+    }, 100)
+    // }
 
     function transformAcross1(d) {
         d.x = w / 2 - h / 6; 
         d.y = h / 4;
         return "translate(" + d.x + "," + d.y + ")";
     }
-    function transformAcross2(d, i) { 
+    function transformAcross2(d, i) {
         d.x = w / 2 - h / 6;
-        d.y = h - h/2;
+        d.y = h * 2;
         return "translate(" + d.x + "," + d.y + ")";
     }
-    function transformAcross3(d, i) {  
+    function transformAcross3(d, i) {
         d.x = w*2;
         d.y = h/4;
         return "translate(" + d.x + "," + d.y + ")";

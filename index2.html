@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="tipsy.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="style.css">
+    <!-- for the audio -->
+    <script src="./files/jquery.min.js"></script>
+    <script src="./files/d3.v3.min.js"></script>
+    <script src="./files/audiodisplay.js"></script>
+    <script src="./files/recorder.js"></script>
+    <!-- for the audio -->
+    <script src="js/jquery.tipsy.js"></script>
+    <script type="text/javascript" src="js/colorbrewer.js"></script>
+</head>
+
+<body>
+    <h3> Searching for European-ness </h3>
+    <!-- /*** CONTAINER for nodes ***/ -->
+    <div id="container">
+    </div>
+    <script>
+// function loadScript(url, callback){
+        var w = window.outerWidth;
+        var h = window.innerHeight;
+        var svg = d3.select("#container")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h)
+
+        // }
+    </script>
+    <script type="text/javascript" src="tropNet.js"></script>
+    <!-- <script src="./files/main.js"></script> -->
+</body>
+
+</html>
