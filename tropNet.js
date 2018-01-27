@@ -1,6 +1,5 @@
 
-console.log(inputValue)
-inputValue = ["racism","democracy","united states"]
+// inputValue = ["racism","democracy","united states"]
 /*** Variables ***/
 //Datavis
 //number of keywords 0-1, 0 will give a lot of keywords
@@ -409,31 +408,14 @@ function simpleNodes() {
         .on("dragstart", dragstart);
 
 
-var nodeData = force.nodes();
-for(i=0; i<nodeData.length; i++){
-    howLong.push(nodeData[i].name);
-    if(nodeData[i].img!=undefined){
-        nodeImg.push(nodeData[i]);
-    }else{
+    var nodeData = force.nodes();
+    for(i=0; i<nodeData.length; i++){
+        howLong.push(nodeData[i].name);
+        if(nodeData[i].img!=undefined){
+            nodeImg.push(nodeData[i]);
+        }else{
+        }
     }
-}
-    images = vis.selectAll("node")
-        .data(nodeImg)
-        .enter().append("svg:image")
-        .attr("xlink:href", function(d) {
-            return d.img;
-        })
-        .attr("x", function(d) {
-            return -25;
-        })
-        .attr("y", function(d) {
-            return -25;
-        })
-        .attr("height", h / 3)
-        .attr("width", h / 3)
-        .attr("transform", function(d, i) {
-            return "translate(" + -w + "," + h / 4 + ")";
-        });
 
     // text = vis.selectAll("labels")
     //     .data(nodeImg)
@@ -462,14 +444,6 @@ for(i=0; i<nodeData.length; i++){
            .style("fill", "none")
            .attr("stroke","white")
            .attr("stroke-width",6);
-    // rect2 = vis.append("rect").attr("class","fake")
-    //        .attr("x",w/2-50)
-    //        .attr("y", 20)
-    //        .attr("width", 0)
-    //        .attr("height",0)
-    //        .style("fill", "none")
-    //        .attr("stroke","white")
-    //        .attr("stroke-width",6);
 
     function dblclick(d) {
         d3.select(this).classed("fixed", d.fixed = false);
@@ -499,28 +473,35 @@ for(i=0; i<nodeData.length; i++){
     var c = false;
     $('#citeRate').slideDown();
     d3.select("#citeRate").classed("selected", true);
+    var imgWidth = h/4;
+    xOffset = imgWidth;  //*1.3; // the xoffset for each day 
+    yOffset = imgWidth; //*1.1; // the yoffset for each day
+    var row = 0; 
+
+    images = vis.selectAll("node")
+        .data(nodeImg)
+        .enter().append("svg:image")
+        .attr("class","n")
+        .attr("xlink:href", function(d) {
+            return d.img;
+        })
+        .attr("x", function(d) {
+            return -25;
+        })
+        .attr("y", function(d) {
+            return -25;
+        })
+        .attr("height", imgWidth)
+        .attr("width", imgWidth)
+        .attr("opacity",1)
+        .attr("transform", function(d,i){
+        // X, Y offset for each day.
+            if( i % 6 == 0 ){ 
+              row++; 
+            }
+            return "translate(" + (( i % 6 + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
+        })
 }
-
-var xrange = d3.scale.linear()
-    .domain([0, 1])
-    .range([w/2-(h/3), w/2+(h/3)])
-
-var yrange = d3.scale.linear()
-    .domain([0, 1])
-    .range([h/4, h/3])
- // function go(){
-var text1 = vis.append("text").attr("class","keeping")
-       .attr("x",w/2-50)
-       .attr("y", h/5)
-       .attr("fill","black")
-       .attr("opacity",0)
-       .text("keep");
-var text2 = vis.append("text").attr("class","discarding")
-       .attr("x",w/2-50)
-       .attr("y", h/5)
-       .attr("fill","black")
-       .attr("opacity",0)
-       .text("discard");
 var anyMatchInArray = function (target, toMatch) {
     "use strict";
     
@@ -545,64 +526,133 @@ var anyMatchInArray = function (target, toMatch) {
         //  will return `undefined`...that's what the `!!` is for
     }
     
-    return found;
+    return [found, cur, i];
 };
-var blinkText;
-    var move = setInterval(function() {
-        var moveIt = d3.select(images[0][indexing]);
-        
+window.makeImages = function(inputAttributes, inputWeights){
+    console.log(inputAttributes)
+    console.log(inputWeights)
         var aName = [];
-        aName = d3.select(nodeImg[indexing].name);
+    var keepIt = [];
 
-        moveIt
+        images
             .transition()
-            .duration(2000)
-            .attr("transform", transformAcross1(moveIt))
             .attr("class",function(d){
+                // aName.push(d.name);
+                // console.log(aName);
                 var findOne = false;
-                findOne = anyMatchInArray(aName[0][0],inputValue)
-                if(findOne){
-                    console.log("YES"+aName+"  aName"+inputValue)   
-                    return "keep";
+                findOne = anyMatchInArray(d.name,inputAttributes)
+
+                if(findOne[0]){
+                    console.log("input first input was "+findOne[1]+ " index of first input "+findOne[2])   
+                    return "keep"+findOne[2];
                 }                
                 else{          
                     return "discard";
                 }
             })
             .each("end", function(d){
-                d3.select(this)
-                    .transition()
-                    .duration(3000)
-                    .attr("transform", function(d){
-                        if(d3.select(this).classed("keep")){
-    d3.select("text.keeping").attr("opacity",1)
-    d3.select("text.discarding").attr("opacity",0)   
-                            console.log("cool")
-                            return transformAcross2(moveIt);
-                        }else{
-    d3.select("text.keeping").attr("opacity",0)
-    d3.select("text.discarding").attr("opacity",1)     
-                            return transformAcross3(moveIt);
-                        }
-                        if(indexing%2==0){             
-                            rect.transition()
-                                .attr("x", xrange(Math.random()))
-                                .attr("y", yrange(Math.random()))
-                                .attr("width", Math.random()*100)
-                                .attr("height", Math.random()*100)
-                                .attr("stroke-width", Math.random()*10)
-                            return transformAcross2(moveIt)
-                        } else{
-                            return transformAcross3(moveIt)
-                        }
-                    })
+                var findOne = false;
+                findOne = anyMatchInArray(d.name,inputAttributes)
+                if(findOne[0]){
+                    keepIt.push(findOne);
+                }
+                keepIt = keepIt.slice(0, 2);
+                console.log(keepIt)
+
+                d3.selectAll(".keep2").transition().attr("opacity", function(d){
+                    var opaScale = d3.scale.linear()
+                        .domain([0, 100])
+                        .range([0, 1]);
+                    return opaScale(inputWeights[1]);
+                })
+                d3.selectAll(".keep1").transition().attr("opacity", function(d){
+                    var opaScale = d3.scale.linear()
+                        .domain([0, 100])
+                        .range([0, 1]);
+                    return opaScale(inputWeights[0]);
+                })
+                d3.selectAll(".discard").transition().attr("opacity",.1);
+                // return ;
             })
-        indexing++;
-        if (indexing >= nodeImg.length){
-            clearInterval(move);
-            clearInterval(blinkText)
-        }
-    }, 4000)
+    keepIt = [];
+}
+var xrange = d3.scale.linear()
+    .domain([0, 1])
+    .range([w/2-(h/3), w/2+(h/3)])
+
+var yrange = d3.scale.linear()
+    .domain([0, 1])
+    .range([h/4, h/3])
+ // function go(){
+var text1 = vis.append("text").attr("class","keeping")
+       .attr("x",w/2-50)
+       .attr("y", h/5)
+       .attr("fill","black")
+       .attr("opacity",0)
+       .text("keep");
+var text2 = vis.append("text").attr("class","discarding")
+       .attr("x",w/2-50)
+       .attr("y", h/5)
+       .attr("fill","black")
+       .attr("opacity",0)
+       .text("discard");
+
+// var blinkText;
+//     var move = setInterval(function() {
+//         var moveIt = d3.select(images[0][indexing]);
+        
+//         var aName = [];
+//         aName = d3.select(nodeImg[indexing].name);
+
+//         moveIt
+//             .transition()
+//             .duration(2000)
+//             .attr("transform", transformAcross1(moveIt))
+//             .attr("class",function(d){
+//                 var findOne = false;
+//                 findOne = anyMatchInArray(aName[0][0],inputValue)
+//                 if(findOne){
+//                     console.log("YES"+aName+"  aName"+inputValue)   
+//                     return "keep";
+//                 }                
+//                 else{          
+//                     return "discard";
+//                 }
+//             })
+//             .each("end", function(d){
+//                 d3.select(this)
+//                     .transition()
+//                     .duration(3000)
+//                     .attr("transform", function(d){
+//                         if(d3.select(this).classed("keep")){
+//     d3.select("text.keeping").attr("opacity",1)
+//     d3.select("text.discarding").attr("opacity",0)   
+//                             console.log("cool")
+//                             return transformAcross2(moveIt);
+//                         }else{
+//     d3.select("text.keeping").attr("opacity",0)
+//     d3.select("text.discarding").attr("opacity",1)     
+//                             return transformAcross3(moveIt);
+//                         }
+//                         if(indexing%2==0){             
+//                             rect.transition()
+//                                 .attr("x", xrange(Math.random()))
+//                                 .attr("y", yrange(Math.random()))
+//                                 .attr("width", Math.random()*100)
+//                                 .attr("height", Math.random()*100)
+//                                 .attr("stroke-width", Math.random()*10)
+//                             return transformAcross2(moveIt)
+//                         } else{
+//                             return transformAcross3(moveIt)
+//                         }
+//                     })
+//             })
+//         indexing++;
+//         if (indexing >= nodeImg.length){
+//             clearInterval(move);
+//             clearInterval(blinkText)
+//         }
+//     }, 4000)
 
 
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title></title>
     <link href="tipsy.css" rel="stylesheet" type="text/css" />
@@ -7,69 +8,47 @@
     <!-- for the audio -->
     <script src="./files/jquery.min.js"></script>
     <script src="./files/d3.v3.min.js"></script>
-    <script src="./files/audiodisplay.js"></script>
-    <script src="./files/recorder.js"></script>
     <!-- for the audio -->
     <script src="js/jquery.tipsy.js"></script>
-    <script type="text/javascript" src="js/colorbrewer.js"></script>
 </head>
 
 <body>
-    <div id = "form" action="">
-        <h2> How should the A.I. search for European heritage?</h2>
-            <textarea rows="5" cols="20">
-            </textarea>
-        <button onclick="myFunction()">Submit</button>
-    </div>
+    <h2> How should the A.I. search for European heritage?</h2>
+    <div id="form" action="">
+        <input type="text" onfocus="this.value=''" class="attribute" value="">
+          <input type="range" min="1" max="100" value="0" class="slider" id="range">
+        <input type="text" onfocus="this.value=''" class="attribute" value="">
+          <input type="range" min="1" max="100" value="0" class="slider" id="range">
 
-    <center>
-        <div class="button" id="reset"> RESET </div>
-        <div class="button" id="audio"> AUDIO </div>
-    </center>
-    <div id="viz">
-        <canvas id="analyser" width="1" height="1"></canvas>
-        <div id="datavis"></div>
-        <canvas id="wavedisplay" width="0" height="0"></canvas>
-    </div>
-    <div id="controls">
-
-        <center>
-            <!-- <button class="btn btn-default" onclick="toggleRecording(this);" id='record'>Record</button> -->
-            <a id="save" href="blob:https://webaudiodemos.appspot.com/87786870-0b0d-4f2e-a359-80ca9b33b29a" download="myRecording00.wav">
-            </a>
-        </center>
-    </div>
-    <div>
-        <ul class="list-unstyled" id='ul'>
-            <!-- <audio controls=""=i d="sm" src="SM-Jeu_3.m4a"></audio> -->
-        </ul>
+        <!-- <input type="radio" name="condition" value="and" checked> And -->
+        <button onclick="myFunction()">GO</button>
     </div>
     <!-- /*** CONTAINER for nodes ***/ -->
     <div id="container">
     </div>
     <script>
-function loadScript(url, callback){
-
-    var script = document.createElement("script")
-    script.type = "text/javascript";
-
-    if (script.readyState){  //IE
-        script.onreadystatechange = function(){
-            if (script.readyState == "loaded" ||
-                    script.readyState == "complete"){
-                script.onreadystatechange = null;
-                callback();
+        function loadScript(url, callback){
+        
+            var script = document.createElement("script")
+            script.type = "text/javascript";
+        
+            if (script.readyState){  //IE
+                script.onreadystatechange = function(){
+                    if (script.readyState == "loaded" ||
+                            script.readyState == "complete"){
+                        script.onreadystatechange = null;
+                        callback();
+                    }
+                };
+            } else {  //Others
+                script.onload = function(){
+                    callback();
+                };
             }
-        };
-    } else {  //Others
-        script.onload = function(){
-            callback();
-        };
-    }
-
-    script.src = url;
-    document.getElementsByTagName("head")[0].appendChild(script);
-}
+        
+            script.src = url;
+            document.getElementsByTagName("head")[0].appendChild(script);
+        }
         var w = window.outerWidth;
         var h = window.innerHeight - 100;
         var svg = d3.select("#container")
@@ -77,30 +56,38 @@ function loadScript(url, callback){
             .attr("width", w)
             .attr("height", h)
 
-        var inputValue;
-        var inputElems;
+        var inputAttributes = [];
+        var inputWeights = [];
         function myFunction() {
-            inputElems = d3.selectAll("textarea");
-            console.log(inputElems)
-            inputValue = inputElems[0][0].value;
-inputValue = inputValue.split(" ");
-Array.prototype.clean = function(deleteValue) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] == deleteValue) {         
-      this.splice(i, 1);
-      i--;
-    }
-  }
-  return this;
-}; inputValue.clean("");
-            console.log(inputValue);
-            $(form).hide();
-            loadScript("tropNet.js", function(){
-                //initialization code
-            });
-        }
-            $(form).hide();
+            inputWeights = [];
+            var inputWs;        
+            inputAttributes = [];
+            var inputAs;
+            inputAs = d3.selectAll(".attribute");
+                for(var i = 0; i<inputAs[0].length; i++){
+                    inputAttributes.push(inputAs[0][i].value)
+                }
+            inputWs = d3.selectAll(".slider");
+                for(var i = 0; i<inputWs[0].length; i++){
+                    inputWeights.push(inputWs[0][i].value)
+                }
+            console.log(inputWeights)
+            console.log(inputAttributes)
+            
+            // Array.prototype.clean = function(deleteValue) {
+            //   for (var i = 0; i < this.length; i++) {
+            //     if (this[i] == deleteValue) {         
+            //       this.splice(i, 1);
+            //       i--;
+            //     }
+            //   }
+            //   return this;
+            // }; inputValue.clean("");
 
+            makeImages(inputAttributes, inputWeights)
+            // loadScript("tropNet.js", function(inputAttributes){
+            // });
+        }
     </script>
     <script type="text/javascript" src="tropNet.js"></script>
     <!-- <script src="./files/main.js"></script> -->
