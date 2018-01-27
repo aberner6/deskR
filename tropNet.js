@@ -152,72 +152,10 @@ var howLong = [];
 var nodes = {};
 var thisPaperName;
 
-
-
-// svg = d3.select("#container")
-//     .append("svg")
-//     .attr("width", w)
-//     .attr("height", h)
-
 var vis = svg //for the visualization
     .append('svg:g')
     .attr("transform", "translate(" + 0 + "," + 0 + ")");
 
-
-
-/***** KEY *****/
-
-$("#key").click(function() {
-    $(".keyCirc, .newlabel, .paperCirc, .journoCirc, .descriplabel").toggle();
-})
-
-var paperKeyCircle = vis.selectAll("paperCirc")
-    .data(t)
-    .enter()
-    .append("circle").attr("class", "paperCirc")
-    .attr("cx", 20)
-    .attr("cy", startingY - 20)
-    .attr("fill", 'rgb(251,180,174)')
-    .attr("r", radius)
-
-var paperLabel = vis.selectAll("keylabel")
-    .data(t)
-    .enter()
-    .append("text").attr("class", "newlabel")
-    .attr("x", 34)
-    .attr("y", startingYLabel - 18)
-    .text("Colored Dot   Paper")
-
-var keyCircle = vis.selectAll("keyCirc")
-    .data(t)
-    .enter()
-    .append("circle").attr("class", "keyCirc")
-    .attr("cx", 20)
-    .attr("cy", startingY)
-    .attr("fill", "white")
-    .attr("stroke", "gray")
-    .attr("r", 8)
-
-var keyLabel = vis.selectAll("keylabel")
-    .data(t)
-    .enter()
-    .append("text").attr("class", "newlabel")
-    .attr("x", 34)
-    .attr("y", startingYLabel)
-    .text("White Dot   Major Keyword")
-
-var journoTitle = vis.selectAll("keylabel")
-    .data(t)
-    .enter()
-    .append("text").attr("class", "newlabel")
-    .attr("x", 17)
-    .attr("y", 391)
-    .text("Each color represents a medium:")
-
-d3.select("#titlename").classed("selected", true);
-d3.select("#subtitlename").classed("selected", true);
-$("#titlename").slideDown("slow")
-$("#subtitlename").slideDown("slow")
 
 //new way
 var dataG = [];
@@ -357,7 +295,7 @@ function createNodes() {
         simpleNodes();
     }
 }
-
+var rectz;
 var callback1;
 var valColor = d3.scale.ordinal()
     .domain(["low", "mid", "high"])
@@ -416,34 +354,15 @@ function simpleNodes() {
         }else{
         }
     }
-
-    // text = vis.selectAll("labels")
-    //     .data(nodeImg)
-    //     .enter().append("text")
-    //     .attr("class", function(d){
-    //         console.log(d.name)
-    //         thisName.push(d.name);
-    //         return "labels"
-    //     })
-    //     .attr("x", -25)
-    //     .attr("y",-25)
-    //     .attr("text-anchor", "start")
-    //     .attr("transform", function(d, i) {
-    //         return "translate(" + -w + "," + h / 4 + ")";
-    //     })
-    //     .text(function(d, i) {
-    //         return d.name;
-    //     });
-    // $(".labels").show();
         
-    rect = vis.append("rect").attr("class","fake")
-           .attr("x",w/2-50)
-           .attr("y", 20)
-           .attr("width", 0)
-           .attr("height",0)
-           .style("fill", "none")
-           .attr("stroke","white")
-           .attr("stroke-width",6);
+    // rect = vis.append("rect").attr("class","fake")
+    //        .attr("x",w/2-50)
+    //        .attr("y", 20)
+    //        .attr("width", 0)
+    //        .attr("height",0)
+    //        .style("fill", "none")
+    //        .attr("stroke","white")
+    //        .attr("stroke-width",6);
 
     function dblclick(d) {
         d3.select(this).classed("fixed", d.fixed = false);
@@ -471,13 +390,13 @@ function simpleNodes() {
     }
 
     var c = false;
-    $('#citeRate').slideDown();
-    d3.select("#citeRate").classed("selected", true);
+
+
     var imgWidth = h/4;
     xOffset = imgWidth;  //*1.3; // the xoffset for each day 
     yOffset = imgWidth; //*1.1; // the yoffset for each day
-    var row = 0; 
 
+    var row = 0; 
     images = vis.selectAll("node")
         .data(nodeImg)
         .enter().append("svg:image")
@@ -491,16 +410,55 @@ function simpleNodes() {
         .attr("y", function(d) {
             return -25;
         })
+        .attr("stroke-width",2)
+        .style("stroke","white")
         .attr("height", imgWidth)
         .attr("width", imgWidth)
         .attr("opacity",1)
         .attr("transform", function(d,i){
-        // X, Y offset for each day.
             if( i % 6 == 0 ){ 
               row++; 
             }
             return "translate(" + (( i % 6 + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
+        });
+    var rowz = 0;
+    rectz = vis.selectAll("g")
+        .data(nodeImg)
+        .enter().append("rect").attr("class","rectz")
+        .attr("width",imgWidth)
+        .attr("height",imgWidth)
+        .attr("x",-25)
+        .attr("y",-25)
+        .attr("fill","none")
+        .attr("stroke", "#99CC33")
+        .attr("stroke-width",2)
+        .attr("transform", function(d,i){
+            if( i % 6 == 0 ){ 
+              rowz++; 
+            }
+            return "translate(" + (( i % 6 + 1 ) * xOffset - .5 * xOffset) + ","+(rowz * yOffset - .5 * yOffset)+")";
         })
+        .attr("opacity",0)
+    // var lilRowz = 0;
+    // var lilR = 10;
+    // var lilRx = 10; //lilR*1.2;
+    // var lilRy = 10; //lilR*1.2;
+    //     rectz.selectAll("rectuz")
+    //         .data(d3.range(100))
+    //         .enter().append("rect").attr("class","rectuz")
+    //         .attr("x", -25)
+    //         .attr("y", -25)
+    //         .attr("height", lilR)
+    //         .attr("width", lilR)
+    //         .attr("fill","black")
+    //         .attr("stroke","black")
+    //         .attr("transform", function(d,i){
+    //             if( i % 20 == 0 ){ 
+    //               lilRowz++; 
+    //             }
+    //             return "translate(" + (( i % 20 + 1 ) * lilRx - .5 * lilRx) + ", "+(lilRowz * lilRy - .5 * lilRy)+")";
+    //         })
+
 }
 var anyMatchInArray = function (target, toMatch) {
     "use strict";
@@ -533,17 +491,39 @@ window.makeImages = function(inputAttributes, inputWeights){
     console.log(inputWeights)
         var aName = [];
     var keepIt = [];
+        rectz
+            .transition()
+            .attr("class",function(d){
+                var findOne = false;
+                findOne = anyMatchInArray(d.name,inputAttributes)
+                if(findOne[0]){
+                    return "keep"+findOne[2];
+                }                
+                else{          
+                    return "discard";
+                }
+            })
+            .attr("opacity", function(d){
+                var findOne = false;
+                findOne = anyMatchInArray(d.name,inputAttributes)
+                if(findOne[0]){
+                    keepIt.push(findOne);
+                }
+                keepIt = keepIt.slice(0, 2);
+
+                d3.selectAll(".keep1").transition().attr("opacity", 1)
+                d3.selectAll(".keep2").transition().attr("opacity", 1)
+                d3.selectAll(".keep3").transition().attr("opacity", 1)
+                d3.selectAll(".discard").transition().attr("opacity",0);
+            })
 
         images
             .transition()
             .attr("class",function(d){
-                // aName.push(d.name);
-                // console.log(aName);
                 var findOne = false;
                 findOne = anyMatchInArray(d.name,inputAttributes)
 
                 if(findOne[0]){
-                    console.log("input first input was "+findOne[1]+ " index of first input "+findOne[2])   
                     return "keep"+findOne[2];
                 }                
                 else{          
@@ -558,20 +538,19 @@ window.makeImages = function(inputAttributes, inputWeights){
                 }
                 keepIt = keepIt.slice(0, 2);
                 console.log(keepIt)
-
-                d3.selectAll(".keep2").transition().attr("opacity", function(d){
                     var opaScale = d3.scale.linear()
                         .domain([0, 100])
                         .range([0, 1]);
-                    return opaScale(inputWeights[1]);
-                })
                 d3.selectAll(".keep1").transition().attr("opacity", function(d){
-                    var opaScale = d3.scale.linear()
-                        .domain([0, 100])
-                        .range([0, 1]);
                     return opaScale(inputWeights[0]);
                 })
-                d3.selectAll(".discard").transition().attr("opacity",.1);
+                d3.selectAll(".keep2").transition().attr("opacity", function(d){
+                    return opaScale(inputWeights[1]);
+                })
+                d3.selectAll(".keep3").transition().attr("opacity", function(d){
+                    return opaScale(inputWeights[2]);
+                })
+                d3.selectAll(".discard").transition().attr("opacity",0);
                 // return ;
             })
     keepIt = [];
