@@ -7,7 +7,24 @@ body {font-family: 'Share Tech Mono', monospace;}
 body, select, input, textarea {
 	color: #333;
 }
+button{
+    left: 47%;
+    width: 80px;
+    margin: 10px 4px;
+    border: 2px solid #99CC33;
+    padding: 10px 10px;
+    position: relative;
 
+    height: 50px;
+    -webkit-appearance: none;
+    /*margin: 10px 0;*/
+    /*width: 100%;*/
+    border: none;
+    background-color: black;
+    color: white;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 28px;
+}
 #logo{
 	width: 150px;
 	border: 2px solid #99CC33;
