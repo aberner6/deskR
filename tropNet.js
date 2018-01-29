@@ -423,24 +423,24 @@ function simpleNodes() {
             }
             return "translate(" + (( i % factorNum + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
         });
-    // var rowz = 0;
-    // rectz = vis.selectAll("g")
-    //     .data(nodeImg)
-    //     .enter().append("rect").attr("class","rectz")
-    //     .attr("width",imgWidth)
-    //     .attr("height",imgWidth)
-    //     .attr("x",-25)
-    //     .attr("y",-25)
-    //     .attr("fill","none")
-    //     .attr("stroke", "#99CC33")
-    //     .attr("stroke-width",2)
-    //     .attr("transform", function(d,i){
-    //         if( i % factorNum == 0 ){ 
-    //           rowz++; 
-    //         }
-    //         return "translate(" + (( i % factorNum + 1 ) * xOffset - .5 * xOffset) + ","+(rowz * yOffset - .5 * yOffset)+")";
-    //     })
-    //     .attr("opacity",0)
+    var rowz = 0;
+    rectz = vis.selectAll("g")
+        .data(nodeImg)
+        .enter().append("rect").attr("class","rectz")
+        .attr("width",imgWidth)
+        .attr("height",imgWidth)
+        .attr("x",-25)
+        .attr("y",-25)
+        .attr("fill","none")
+        .attr("stroke", "#99CC33")
+        .attr("stroke-width",2)
+        .attr("transform", function(d,i){
+            if( i % factorNum == 0 ){ 
+              rowz++; 
+            }
+            return "translate(" + (( i % factorNum + 1 ) * xOffset - .5 * xOffset) + ","+(rowz * yOffset - .5 * yOffset)+")";
+        })
+        .attr("opacity",0)
     // var lilRowz = 0;
     // var lilR = 10;
     // var lilRx = 10; //lilR*1.2;
@@ -498,23 +498,23 @@ window.makeImages = function(inputAttributes, inputWeights){
     indexing = 0;
 
     var rowz = 0;
-        // rectz
-        //     .transition()
-        //     .attr("class",function(d){
-        //         var findOne = false;
-        //         findOne = anyMatchInArray(d.name,inputAttributes)
-        //         if(findOne[0]){
-        //             count++;
-        //             return "keep"+findOne[2];
-        //         }                
-        //         else{          
-        //             return "discard";
-        //         }
-        //     })
-        //     .each("end", function(d){
-        //         d3.selectAll(".keep1, .keep2, .keep3").transition().attr("opacity", 1);
-        //         d3.selectAll(".discard").transition().duration(5000).attr("opacity",0);
-        //     });
+        rectz
+            .transition()
+            .attr("class",function(d){
+                var findOne = false;
+                findOne = anyMatchInArray(d.name,inputAttributes)
+                if(findOne[0]){
+                    count++;
+                    return "keep"+findOne[2];
+                }                
+                else{          
+                    return "discard";
+                }
+            })
+            .each("end", function(d){
+                d3.selectAll(".keep1, .keep2, .keep3").transition().attr("opacity", 1);
+                d3.selectAll(".discard").transition().duration(5000).attr("opacity",0);
+            });
         var row = 0;
         var rowy = 0;
         images
@@ -583,23 +583,25 @@ var opaScale = d3.scale.linear()
 var keep0;
 var keep;
 var blah;
+var bloo;
 function moving(count){
     keep = 0;
     keep0 = 0;
     blah = 0;
+    bloo = 0;
     var move = setInterval(function() {
         var moveIt = d3.select(images[0][indexing]);
-        // var moveRect = d3.select(rectz[0][indexing]);
+        var moveRect = d3.select(rectz[0][indexing]);
         console.log("moving")
         moveIt
             .transition()
-            .duration(1000)
+            .duration(2000)
             .attr("transform", transformAcross1(moveIt))
             .each("end", function(d){
                 moveIt 
                     .transition()
                     // .delay(1500)
-                    .duration(2000)
+                    .duration(3000)
                     .attr("opacity",1)
                     .attr("transform", function(d){
                         if(d3.select(this).classed("keep1")||d3.select(this).classed("keep2")||d3.select(this).classed("keep3")){
@@ -613,7 +615,7 @@ function moving(count){
                     .each("end", function(d){
                           moveIt 
                             .transition()
-                            // .duration(1000)
+                            .duration(2000)
                             .attr("opacity", function(d){
                                 if(d3.select(this).classed("keep1")){
                                     return opaScale(inputWeights[0]);                                    
@@ -625,21 +627,30 @@ function moving(count){
                                     return opaScale(inputWeights[2]);                                    
                                 }
                                 if(d3.select(this).classed("discard")){
-                                    return 0;
+                                    return .4;
                                 }
                             })   
-                        })                         
-                    //         .attr("transform", function(d){
-                    //             if(d3.select(this).classed("discard")){
-                    //                 return transformAcross4(d3.select(this));
-                    //             }else{
-                    //                 return transformAcross2(moveIt, count, keep0);
-                    //             }
-                    //         })
-                    // })
-                
+                        })                                         
                 })
-
+        moveRect
+            .transition()
+            .duration(2000)
+            .attr("transform", transformAcross1(moveRect))
+            .each("end", function(d){
+                moveRect
+                    .transition()
+                    .duration(3000)
+                    .attr("opacity",1)
+                    .attr("transform", function(d){
+                        if(d3.select(this).classed("keep1")||d3.select(this).classed("keep2")||d3.select(this).classed("keep3")){
+                            console.log("cool")
+                            keep++;
+                            return transformAcross5(moveRect, count, keep);
+                        }else{   
+                            return transformAcross3(moveRect);
+                        }
+                    })                                         
+                })
         // moveRect
         //     .transition()
         //     .duration(1000)
@@ -685,7 +696,10 @@ function moving(count){
         d.y = h / 4;
         return "translate(" + d.x + "," + d.y + ")";
     }
-
+    function transformAcross5(d, count, keep) { 
+        bloo++;
+        return "translate(" + imgWidth*bloo + ","+ h/14 +")";
+    }
     function transformAcross2(d, count, keep0) { 
         blah++;
         return "translate(" + imgWidth*blah + ","+ h/14 +")";
