@@ -304,7 +304,8 @@ var greyColor = "#808080";
 var majorNodes = [];
 var nodeImg = [];
 var thisName = [];
-var imgWidth = 200;
+var imgWidth = 120;
+    var factorNum = Math.round(w/imgWidth)-1; 
 
 function simpleNodes() {
     var thisMap;
@@ -397,7 +398,6 @@ function simpleNodes() {
     xOffset = imgWidth;  //*1.3; // the xoffset for each day 
     yOffset = imgWidth; //*1.1; // the yoffset for each day
 
-    var factorNum = Math.round(w/imgWidth)-1; 
     var row = 0; 
     images = vis.selectAll("node")
         .data(nodeImg)
@@ -423,24 +423,24 @@ function simpleNodes() {
             }
             return "translate(" + (( i % factorNum + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
         });
-    var rowz = 0;
-    rectz = vis.selectAll("g")
-        .data(nodeImg)
-        .enter().append("rect").attr("class","rectz")
-        .attr("width",imgWidth)
-        .attr("height",imgWidth)
-        .attr("x",-25)
-        .attr("y",-25)
-        .attr("fill","none")
-        .attr("stroke", "#99CC33")
-        .attr("stroke-width",2)
-        .attr("transform", function(d,i){
-            if( i % factorNum == 0 ){ 
-              rowz++; 
-            }
-            return "translate(" + (( i % factorNum + 1 ) * xOffset - .5 * xOffset) + ","+(rowz * yOffset - .5 * yOffset)+")";
-        })
-        .attr("opacity",0)
+    // var rowz = 0;
+    // rectz = vis.selectAll("g")
+    //     .data(nodeImg)
+    //     .enter().append("rect").attr("class","rectz")
+    //     .attr("width",imgWidth)
+    //     .attr("height",imgWidth)
+    //     .attr("x",-25)
+    //     .attr("y",-25)
+    //     .attr("fill","none")
+    //     .attr("stroke", "#99CC33")
+    //     .attr("stroke-width",2)
+    //     .attr("transform", function(d,i){
+    //         if( i % factorNum == 0 ){ 
+    //           rowz++; 
+    //         }
+    //         return "translate(" + (( i % factorNum + 1 ) * xOffset - .5 * xOffset) + ","+(rowz * yOffset - .5 * yOffset)+")";
+    //     })
+    //     .attr("opacity",0)
     // var lilRowz = 0;
     // var lilR = 10;
     // var lilRx = 10; //lilR*1.2;
@@ -498,23 +498,23 @@ window.makeImages = function(inputAttributes, inputWeights){
     indexing = 0;
 
     var rowz = 0;
-        rectz
-            .transition()
-            .attr("class",function(d){
-                var findOne = false;
-                findOne = anyMatchInArray(d.name,inputAttributes)
-                if(findOne[0]){
-                    count++;
-                    return "keep"+findOne[2];
-                }                
-                else{          
-                    return "discard";
-                }
-            })
-            .each("end", function(d){
-                d3.selectAll(".keep1, .keep2, .keep3").transition().attr("opacity", 1);
-                d3.selectAll(".discard").transition().duration(5000).attr("opacity",0);
-            });
+        // rectz
+        //     .transition()
+        //     .attr("class",function(d){
+        //         var findOne = false;
+        //         findOne = anyMatchInArray(d.name,inputAttributes)
+        //         if(findOne[0]){
+        //             count++;
+        //             return "keep"+findOne[2];
+        //         }                
+        //         else{          
+        //             return "discard";
+        //         }
+        //     })
+        //     .each("end", function(d){
+        //         d3.selectAll(".keep1, .keep2, .keep3").transition().attr("opacity", 1);
+        //         d3.selectAll(".discard").transition().duration(5000).attr("opacity",0);
+        //     });
         var row = 0;
         var rowy = 0;
         images
@@ -554,7 +554,7 @@ window.makeImages = function(inputAttributes, inputWeights){
             //     d3.selectAll(".discard").transition().duration(5000).attr("opacity",0);
             // })
     keepIt = [];
-    moving();
+    moving(count);
 }
 var xrange = d3.scale.linear()
     .domain([0, 1])
@@ -580,23 +580,32 @@ var text2 = vis.append("text").attr("class","discarding")
 var opaScale = d3.scale.linear()
     .domain([0, 100])
     .range([.5, 1]);
-function moving(){
+var keep0;
+var keep;
+var blah;
+function moving(count){
+    keep = 0;
+    keep0 = 0;
+    blah = 0;
     var move = setInterval(function() {
         var moveIt = d3.select(images[0][indexing]);
+        // var moveRect = d3.select(rectz[0][indexing]);
         console.log("moving")
         moveIt
             .transition()
-            .duration(2000)
+            .duration(1000)
             .attr("transform", transformAcross1(moveIt))
             .each("end", function(d){
                 moveIt 
                     .transition()
+                    // .delay(1500)
                     .duration(2000)
                     .attr("opacity",1)
                     .attr("transform", function(d){
                         if(d3.select(this).classed("keep1")||d3.select(this).classed("keep2")||d3.select(this).classed("keep3")){
                             console.log("cool")
-                            return transformAcross2(moveIt);
+                            keep0++;
+                            return transformAcross2(moveIt, count, keep0);
                         }else{   
                             return transformAcross3(moveIt);
                         }
@@ -604,35 +613,70 @@ function moving(){
                     .each("end", function(d){
                           moveIt 
                             .transition()
+                            // .duration(1000)
                             .attr("opacity", function(d){
+                                if(d3.select(this).classed("keep1")){
+                                    return opaScale(inputWeights[0]);                                    
+                                }
+                                if(d3.select(this).classed("keep2")){
+                                    return opaScale(inputWeights[1]);                                    
+                                }
+                                if(d3.select(this).classed("keep3")){
+                                    return opaScale(inputWeights[2]);                                    
+                                }
                                 if(d3.select(this).classed("discard")){
                                     return 0;
-                                }else{
-                d3.selectAll(".keep1").transition().attr("opacity", function(d){
-                    return opaScale(inputWeights[0]);
-                })
-                d3.selectAll(".keep2").transition().attr("opacity", function(d){
-                    return opaScale(inputWeights[1]);
-                })
-                d3.selectAll(".keep3").transition().attr("opacity", function(d){
-                    return opaScale(inputWeights[2]);
-                })
                                 }
-                            })                            
-                            .attr("transform", function(d){
-                                if(d3.select(this).classed("discard")){
-                                    return transformAcross4(d3.select(this));
-                                }else{
-                                    return transformAcross2(moveIt);
-                                }
-                            })
-                    })
-            })
+                            })   
+                        })                         
+                    //         .attr("transform", function(d){
+                    //             if(d3.select(this).classed("discard")){
+                    //                 return transformAcross4(d3.select(this));
+                    //             }else{
+                    //                 return transformAcross2(moveIt, count, keep0);
+                    //             }
+                    //         })
+                    // })
+                
+                })
+
+        // moveRect
+        //     .transition()
+        //     .duration(1000)
+            // .attr("transform", transformAcross1(moveRect))
+            // .each("end", function(d){
+            //     moveRect
+            //         .transition()
+            //         .duration(2000)
+            //         .attr("opacity",1)
+            //         .attr("transform", function(d){
+            //             if(d3.select(this).classed("keep1")||d3.select(this).classed("keep2")||d3.select(this).classed("keep3")){
+            //                 console.log("cool")
+            //                 keep++;
+            //                 return transformAcross2(moveRect, count, keep);
+            //             }else{   
+            //                 return transformAcross3(moveRect);
+            //             }
+            //         })
+                    // .each("end", function(d){
+                    //       moveRect 
+                    //         .transition()  
+                    //         .duration(2000)                       
+                    //         .attr("transform", function(d){
+                    //             if(d3.select(this).classed("discard")){
+                    //                 return transformAcross4(d3.select(this));
+                    //             }else{
+                    //                 // keep++;
+                    //                 return transformAcross2(moveRect, count, keep);
+                    //             }
+                    //         })
+                    // })
+                // })
         indexing++;
         if (indexing >= nodeImg.length){
             clearInterval(move);
         }
-    }, 100)
+    }, 500)
 }
 
 
@@ -641,10 +685,10 @@ function moving(){
         d.y = h / 4;
         return "translate(" + d.x + "," + d.y + ")";
     }
-    function transformAcross2(d, i) { 
-        d.x = w / 2 - h / 6;
-        d.y = h - h/2;
-        return "translate(" + d.x + "," + d.y + ")";
+
+    function transformAcross2(d, count, keep0) { 
+        blah++;
+        return "translate(" + imgWidth*blah + ","+ h/14 +")";
     }
     function transformAcross3(d, i) {  
         d.x = w*2;

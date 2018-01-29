@@ -57,7 +57,8 @@ button{
 
 .container{
 	display: inline-block;
-	width: 30%;
+	width: 28%;
+/*height: 160px;*/
 	margin: 0px 4px;
 	border: 2px solid #99CC33;
   	padding: 15px 10px;
