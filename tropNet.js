@@ -584,7 +584,11 @@ var keep0;
 var keep;
 var blah;
 var bloo;
+var rowe;
+var rowa;
 function moving(count){
+    rowe = 0;
+    rowa = 0;
     keep = 0;
     keep0 = 0;
     blah = 0;
@@ -698,11 +702,19 @@ function moving(count){
     }
     function transformAcross5(d, count, keep) { 
         bloo++;
-        return "translate(" + imgWidth*bloo + ","+ h/14 +")";
+        if( bloo % factorNum == 0 ){ 
+          rowa++; 
+        }
+        //im
+        return "translate(" + (( bloo % factorNum + 1 ) * xOffset - .5 * xOffset) + ", "+(yOffset+rowa * yOffset - .5 * yOffset)+")";
     }
     function transformAcross2(d, count, keep0) { 
         blah++;
-        return "translate(" + imgWidth*blah + ","+ h/14 +")";
+        if( blah % factorNum == 0 ){ 
+          rowe++; 
+        }
+        //im
+        return "translate(" + (( blah % factorNum + 1 ) * xOffset - .5 * xOffset) + ", "+(yOffset+rowe * yOffset - .5 * yOffset)+")";
     }
     function transformAcross3(d, i) {  
         d.x = w*2;
